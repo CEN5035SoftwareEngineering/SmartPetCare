@@ -1,0 +1,28 @@
+/* Color Palette:
+#DBDDDB –Light Gray
+#63B4B4 –Teal
+#0D1416 –Black
+#808384 –Dark gray
+#96b299 –Olive Green */
+
+/* Color Scheme */
+:root{
+    --light-gray: #DBDDDB;
+    --teal: #63B4B4;
+    --black: #0D1416;
+    --dark-gray: #808384;
+    --olive-green: #96b299;
+}
+
+/* Styling for the navbar */
+
+
+/* Styling for the heading & body */
+h1{
+    color: var(--black)
+}
+
+body{
+    background-color: var(--light-gray)
+}
+
