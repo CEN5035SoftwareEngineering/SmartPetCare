@@ -5,15 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SmartPetCare</title>
     <link rel="stylesheet" href="userstyles.css">
+
+    <!-- Parse SDK -->
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+    <script>
+        // Initialize Parse
+        Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
+        Parse.serverURL = 'https://parseapi.back4app.com/';
+    </script>
 </head>
 <body>
     <div class="container">
         <h2>Login</h2>
-        <form action="#" method="POST">
+        <form id="loginForm">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Click here to Login!</button>
+            <button type="submit">Login</button>
         </form>
     </div>
+
+    <script>
+        const form = document.getElementById("loginForm");
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const username = form.username.value;
+            const password = form.password.value;
+
+            try {
+                const user = await Parse.User.logIn(username, password);
+                alert("Login successful! Welcome, " + user.get("username"));
+                window.location.href = "../User_profiles_posting/profile.html";
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
 </body>
 </html>
