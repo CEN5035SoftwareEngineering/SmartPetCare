@@ -1,0 +1,70 @@
+:root {
+    --light-gray: #DBDDDB;
+    --teal: #63B4B4;
+    --black: #0D1416;
+    --dark-gray: #808384;
+    --olive-green: #96b299;
+    --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--light-gray);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 25px;
+    color: var(--teal);
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--dark-gray);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--black);
+}
+
+input::placeholder {
+    color: var(--dark-gray);
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--olive-green);
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--teal);
+}
