@@ -18,15 +18,30 @@
 
     </head>
     <body>
-        <!--Welcome page contents-->
+    <!-- Navigation Bar -->
+    <div class="navbar">
+      <div class="nav-brand">Smart Pet Care</div>
+      <div class="nav-toggle" onclick="toggleMenu()">☰</div>
+      <div class="nav-links" id="navLinks">
+        <a href="User_login_signup/login.html" class="btn teal">Login</a>
+        <a href="User_login_signup/signup.html" class="btn olive">Signup</a>
+      </div>
+    </div>
+
+    <!-- Landing Page Content -->
+    <section id="landing-page">
+      <div class="landing-container">
         <h1>Smart Pet Care!</h1>
-        <hr> 
-        <h2>"Because Every Paw Deserves the Best"🐶</h2>
-        <!-- Navigation bar start -->
-        <div class="navbar">
-            <a class="home">Smart Pet Care</a>
-            <a href="User_login_signup/login.html">Login</a>
-            <a href="User_login_signup/signup.html">Signup</a>
-        </div>
-    </body>
+        <hr />
+        <h2>"Because Every Paw Deserves the Best" 🐶</h2>
+      </div>
+    </section>
+
+    <script>
+      function toggleMenu() {
+        const links = document.getElementById("navLinks");
+        links.classList.toggle("active");
+      }
+    </script>
+  </body>
 </html>
