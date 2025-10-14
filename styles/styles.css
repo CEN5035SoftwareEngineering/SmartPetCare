@@ -13,16 +13,134 @@
     --dark-gray: #808384;
     --olive-green: #96b299;
 }
+/* Main body styles */
+body {
+  background-color: var(--light-gray);
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: var(--black);
+}
 
 /* Styling for the navbar */
-
-
-/* Styling for the heading & body */
-h1{
-    color: var(--black)
+.navbar {
+  background-color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px;
+  color: var(--light-gray);
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
-body{
-    background-color: var(--light-gray)
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--teal);
+  letter-spacing: 0.5px;
 }
 
+.nav-toggle {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: var(--light-gray);
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Button Colors */
+.btn.teal {
+  background-color: var(--teal);
+}
+
+.btn.olive {
+  background-color: var(--olive-green);
+}
+
+.nav-links a:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* =====================================
+   RESPONSIVE NAVBAR
+===================================== */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: var(--black);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-links a {
+    text-align: center;
+    display: block;
+    padding: 14px;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+}
+/* Styling for the heading & body of the landing page */
+#landing-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* full height minus navbar */
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.landing-container {
+  background-color: white;
+  padding: 40px 60px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+  color: var(--teal);
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: var(--dark-gray);
+  font-weight: normal;
+  margin-bottom: 0;
+  font-size: 1.4rem;
+}
+
+hr {
+  width: 60%;
+  margin: 20px auto;
+  border: 1px solid var(--teal);
+}
