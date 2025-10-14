@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-        <link rel="stylesheet" href="styles/styles.css">
+        <link rel="stylesheet" href=".../styles/styles.css">
         <!-- <script src="homescripts.js"></script> -->
 
         <!-- Latest compiled JavaScript -->
@@ -18,10 +18,30 @@
 
     </head>
     <body>
-        <!--Welcome page contents-->
-        <h1>Smart Pet Care!</h1>
-        <hr> 
-        <h2>"Because Every Paw Deserves the Best"🐶</h2>
-        
-    </body>
+  <div class="navbar">
+    <a href="../index.html" class="home">Smart Pet Care</a>
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <div class="navbar-links" id="navbarLinks">
+      <a href="../User_login_signup/login.html">Login</a>
+      <a href="../User_login_signup/signup.html">Signup</a>
+      <a href="../User_profiles_pages/profile.html">Profile</a>
+      <a href="../Searching/search.html">Search</a>
+      <a href="../Rebooking/book.html">Book</a>
+      <a href="../Feedback/feedback.html">Feedback</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Your Profile</h1>
+    <p>Manage your account and your pet’s profile here.</p>
+    <button class="btn teal">Edit My Profile</button>
+    <button class="btn olive">Manage My Pet’s Profile</button>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("navbarLinks").classList.toggle("active");
+    }
+  </script>
+</body>
 </html>

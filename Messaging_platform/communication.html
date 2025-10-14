@@ -1,27 +1,34 @@
-<!-- This page will provide the communication between the caretakers and pet parents -->
 <!DOCTYPE html>
-<html>
-    <head>
-        <!--The introduction section of code-->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-        <link rel="stylesheet" href="styles/styles.css">
-        <!-- <script src="homescripts.js"></script> -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - Smart Pet Care</title>
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <div class="navbar">
+    <a href="../index.html" class="home">Smart Pet Care</a>
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <div class="navbar-links" id="navbarLinks">
+      <a href="../User_profiles_pages/profile.html">Profile</a>
+      <a href="../Searching/search.html">Search</a>
+    </div>
+  </div>
 
-        <!-- Latest compiled JavaScript -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> -->
-        
-        <!--My title & favicon-->
-        <title>Smart Pet Care</title>
-        <link rel="icon" type="image/x-icon" href="styles/favicon.png">
+  <div class="container">
+    <h1>Messages</h1>
+    <p>Chat with your sitter or client.</p>
+    <div style="border:1px solid #ccc; border-radius:10px; padding:10px; max-width:600px; margin:auto; background:white;">
+      <p><strong>Sitter:</strong> Hi! What time should I pick up Bella?</p>
+      <p><strong>You:</strong> 8 AM works great!</p>
+    </div>
+  </div>
 
-    </head>
-    <body>
-        <!--Welcome page contents-->
-        <h1>Smart Pet Care!</h1>
-        <hr> 
-        <h2>"Because Every Paw Deserves the Best"🐶</h2>
-        
-    </body>
+  <script>
+    function toggleMenu() {
+      document.getElementById("navbarLinks").classList.toggle("active");
+    }
+  </script>
+</body>
 </html>
