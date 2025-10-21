@@ -1,27 +1,36 @@
-<!-- This is where the user can scroll to view posts -->
 <!DOCTYPE html>
-<html>
-    <head>
-        <!--The introduction section of code-->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-        <link rel="stylesheet" href="styles/styles.css">
-        <!-- <script src="homescripts.js"></script> -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Pet Care</title>
+  <link rel="icon" type="image/x-icon" href="styles/favicon.png">
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
-        <!-- Latest compiled JavaScript -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> -->
-        
-        <!--My title & favicon-->
-        <title>Smart Pet Care</title>
-        <link rel="icon" type="image/x-icon" href="styles/favicon.png">
+    <input type="checkbox" id="menu-toggle" class="menu-toggle">
+    <label for="menu-toggle" class="menu-icon">☰</label>
 
-    </head>
-    <body>
-        <!--Welcome page contents-->
-        <h1>Smart Pet Care!</h1>
-        <hr> 
-        <h2>"Because Every Paw Deserves the Best"🐶</h2>
-        
-    </body>
+    <div class="nav-links">
+      <a href="profile.html">Profile</a>
+      <a href="post.html">Post</a>
+      <a href="scroll_view.html">View Posts</a>
+    </div>
+  </div>
+
+  <!-- Scrollable Dog Feed -->
+  <div class="container">
+    <h1>🐾 Community Pet Gallery</h1>
+    <h2>See all the adorable dogs shared by our community members!</h2>
+    <hr>
+
+    <div id="postFeed" class="feed"></div>
+  </div>
+
+  <script src="scroll.js" defer></script>
+</body>
 </html>

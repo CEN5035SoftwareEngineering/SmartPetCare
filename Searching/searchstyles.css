@@ -161,3 +161,271 @@ body {
   text-align: center;
   margin-top: 20px;
 }
+
+
+/* Color Palette:
+#DBDDDB –Light Gray
+#63B4B4 –Teal
+#0D1416 –Black
+#808384 –Dark gray
+#96b299 –Olive Green */
+
+/* Color Scheme */
+:root{
+    --light-gray: #DBDDDB;
+    --teal: #63B4B4;
+    --black: #0D1416;
+    --dark-gray: #808384;
+    --olive-green: #96b299;
+}
+/* Main body styles */
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+body {
+  background-color: var(--light-gray);
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: var(--black);
+}
+
+/* Styling for the navbar */
+navbar {
+  background-color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-brand {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--teal);
+}
+
+/* Hide the checkbox input */
+.menu-toggle {
+  display: none;
+}
+
+/* Menu icon (for mobile) */
+.menu-icon {
+  display: none;
+  font-size: 1.8rem;
+  color: var(--light-gray);
+  cursor: pointer;
+}
+
+/* Nav links styling */
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Button colors */
+.btn.teal {
+  background-color: var(--teal);
+}
+
+.btn.olive {
+  background-color: var(--olive);
+}
+
+/* ===== RESPONSIVE NAVIGATION ===== */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: var(--black);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    padding: 10px 0;
+  }
+
+  /* When checkbox is checked, show menu */
+  .menu-toggle:checked + .menu-icon + .nav-links {
+    display: flex;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 14px;
+    text-align: center;
+  }
+}
+
+/* ===== LANDING PAGE ===== */
+#landing-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 70px);
+}
+
+.landing-container {
+  background-color: white;
+  padding: 40px 60px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+h1 {
+  color: var(--teal);
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: var(--dark-gray);
+  font-weight: normal;
+}
+
+hr {
+  width: 60%;
+  margin: 20px auto;
+  border: 1px solid var(--teal);
+}
+
+
+/* New Styles */
+
+/* styles/styles.css */
+:root {
+  --light-gray: #DBDDDB;
+  --teal: #63B4B4;
+  --black: #0D1416;
+  --dark-gray: #808384;
+  --olive: #96b299;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: var(--light-gray);
+  color: var(--black);
+  padding-top: 70px; /* space for fixed navbar */
+  text-align: center;
+}
+
+/* Sticky responsive navbar */
+.navbar {
+  background-color: var(--teal);
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 1.2em;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  background-color: var(--olive);
+  border-radius: 6px;
+}
+
+.menu-icon {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 10px;
+}
+
+/* Responsive navbar */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: var(--teal);
+    position: absolute;
+    top: 60px;
+    left: 0;
+  }
+
+  .navbar-links.active {
+    display: flex;
+  }
+
+  .menu-icon {
+    display: block;
+  }
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  margin: 5px;
+}
+
+.btn.teal {
+  background-color: var(--teal);
+}
+
+.btn.olive {
+  background-color: var(--olive);
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Page container */
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
