@@ -1,27 +1,33 @@
-<!-- This page will provide the ability for the users to search -->
 <!DOCTYPE html>
-<html>
-    <head>
-        <!--The introduction section of code-->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-        <link rel="stylesheet" href="styles/styles.css">
-        <!-- <script src="homescripts.js"></script> -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find a Sitter - Smart Pet Care</title>
+  <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+  <div class="navbar">
+    <a href="../index.html" class="home">Smart Pet Care</a>
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <div class="navbar-links" id="navbarLinks">
+      <a href="../User_profiles_pages/profile.html">Profile</a>
+      <a href="../Rebooking/book.html">Book</a>
+      <a href="../Feedback/feedback.html">Feedback</a>
+    </div>
+  </div>
 
-        <!-- Latest compiled JavaScript -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> -->
-        
-        <!--My title & favicon-->
-        <title>Smart Pet Care</title>
-        <link rel="icon" type="image/x-icon" href="styles/favicon.png">
+  <div class="container">
+    <h1>Find Trusted Sitters</h1>
+    <p>Search for nearby pet sitters, walkers, and caregivers.</p>
+    <input type="text" placeholder="Search by location or sitter name..." style="padding:10px;width:70%;border-radius:5px;border:1px solid #ccc;">
+    <button class="btn teal">Search</button>
+  </div>
 
-    </head>
-    <body>
-        <!--Welcome page contents-->
-        <h1>Smart Pet Care!</h1>
-        <hr> 
-        <h2>"Because Every Paw Deserves the Best"🐶</h2>
-        
-    </body>
+  <script>
+    function toggleMenu() {
+      document.getElementById("navbarLinks").classList.toggle("active");
+    }
+  </script>
+</body>
 </html>
