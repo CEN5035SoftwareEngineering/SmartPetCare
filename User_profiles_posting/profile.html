@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-        <link rel="stylesheet" href=".../styles/styles.css">
+        <link rel="stylesheet" href="profilestyles.css">
         <!-- <script src="homescripts.js"></script> -->
 
         <!-- Latest compiled JavaScript -->
@@ -19,29 +19,82 @@
     </head>
     <body>
   <div class="navbar">
-    <a href="../index.html" class="home">Smart Pet Care</a>
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <!-- <a href="../index.html" class="home">Smart Pet Care</a> -->
+    <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
+    <label for="menu-toggle" class="menu-icon">☰</label>
     <div class="navbar-links" id="navbarLinks">
-      <a href="../User_login_signup/login.html">Login</a>
-      <a href="../User_login_signup/signup.html">Signup</a>
-      <a href="../User_profiles_pages/profile.html">Profile</a>
       <a href="../Searching/search.html">Search</a>
       <a href="../Rebooking/book.html">Book</a>
       <a href="../Feedback/feedback.html">Feedback</a>
     </div>
   </div>
 
-  <div class="container">
-    <h1>Your Profile</h1>
-    <p>Manage your account and your pet’s profile here.</p>
-    <button class="btn teal">Edit My Profile</button>
-    <button class="btn olive">Manage My Pet’s Profile</button>
-  </div>
 
-  <script>
-    function toggleMenu() {
-      document.getElementById("navbarLinks").classList.toggle("active");
-    }
-  </script>
+
+<main class="container">
+    <h1>My Profile</h1>
+    <p>Manage your account and your pet’s profile below.</p>
+
+    <!-- Pet Parent Form -->
+    <form id="parentForm" class="profile-form">
+      <h2>Pet Parent Profile</h2>
+
+      <label>Upload My Photo:</label>
+      <input type="file" id="parentPhoto" accept="image/*" />
+
+      <label>Name:</label>
+      <input type="text" id="parentName" placeholder="Your name" />
+
+      <label>Zip Code:</label>
+      <input type="text" id="parentZip" placeholder="e.g., 33431" />
+
+      <h3>Dog Profile</h3>
+      <label>Dog Photo:</label>
+      <input type="file" id="dogPhoto" accept="image/*" />
+      <label>Dog Name:</label>
+      <input type="text" id="dogName" placeholder="e.g., Bella" />
+      <label>Age:</label>
+      <input type="number" id="dogAge" placeholder="e.g., 4" />
+      <label>Breed:</label>
+      <input type="text" id="dogBreed" placeholder="e.g., Golden Retriever" />
+      <label>Weight (lbs):</label>
+      <input type="number" id="dogWeight" placeholder="e.g., 65" />
+      <label>Medications:</label>
+      <input type="text" id="dogMeds" placeholder="List medications or none" />
+      <label>Hypoallergenic?</label>
+      <select id="dogHypo">
+        <option value="">Select...</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+      <label>Bio:</label>
+      <textarea id="dogBio" placeholder="Tell us about your dog's personality..."></textarea>
+      
+      <div class="btn-group">
+        <button type="button" id="saveProfile" class="btn teal">Save Profile</button>
+        <button type="reset" class="btn olive">Clear</button>
+      </div>
+    </form>
+
+    <!-- Saved Data Section -->
+    <section id="savedProfile" class="hidden">
+      <h2>Saved Profile Information</h2>
+      <div id="profileDisplay"></div>
+      <button id="editProfile" class="btn olive">Edit Profile</button>
+    </section>
+  </main>
+
+  <script src="Profile.js"></script>
 </body>
 </html>
+
+<!-- This is some possible code to save the profile -->
+<!-- const Caretaker = Parse.Object.extend("Caretaker");
+const caretaker = new Caretaker();
+caretaker.set("name", name);
+caretaker.set("bio", bio);
+caretaker.set("zip", zip);
+caretaker.set("rate", rate);
+caretaker.set("experience", experience);
+caretaker.save();
+ -->
