@@ -25,26 +25,30 @@
     </div>
 
     <script>
-        const form = document.getElementById("signupForm");
+    const form = document.getElementById("signupForm");
 
-        form.addEventListener("submit", async function(e) {
-            e.preventDefault();
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
 
-            const username = form.username.value;
-            const password = form.password.value;
+        const username = form.username.value;
+        const password = form.password.value;
 
-            const user = new Parse.User();
-            user.set("username", username);
-            user.set("password", password);
+        // ✅ Ensure no old session is active
+        await Parse.User.logOut();
 
-            try {
-                await user.signUp();
-                alert("Signup successful! You can now login.");
-                window.location.href = "login.html"; // redirect to login page
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        });
-    </script>
+        const user = new Parse.User();
+        user.set("username", username);
+        user.set("password", password);
+
+        try {
+            await user.signUp();
+            alert("Signup successful! You can now login.");
+            window.location.href = "login.html"; // redirect to login page
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    });
+</script>
+
 </body>
 </html>
