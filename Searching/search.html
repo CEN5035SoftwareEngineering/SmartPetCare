@@ -3,31 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Find a Sitter - Smart Pet Care</title>
+  <title>Smart Pet Care</title>
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
   <div class="navbar">
-    <a href="../index.html" class="home">Smart Pet Care</a>
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
-    <div class="navbar-links" id="navbarLinks">
+      <label for="menu-toggle" class="menu-icon">☰</label>    <div class="navbar-links" id="navbarLinks">
       <a href="../User_profiles_pages/profile.html">Profile</a>
       <a href="../Rebooking/book.html">Book</a>
       <a href="../Feedback/feedback.html">Feedback</a>
     </div>
   </div>
 
-  <div class="container">
+  <!-- Search Section -->
+  <main class="container">
     <h1>Find Trusted Sitters</h1>
-    <p>Search for nearby pet sitters, walkers, and caregivers.</p>
-    <input type="text" placeholder="Search by location or sitter name..." style="padding:10px;width:70%;border-radius:5px;border:1px solid #ccc;">
-    <button class="btn teal">Search</button>
-  </div>
+    <p>Enter your ZIP code to find available pet caretakers nearby.</p>
 
-  <script>
-    function toggleMenu() {
-      document.getElementById("navbarLinks").classList.toggle("active");
-    }
-  </script>
+    <div class="search-box">
+      <input type="text" id="zipSearch" placeholder="Enter ZIP Code (e.g., 33431)" maxlength="10">
+      <button class="btn teal" id="searchBtn">Search</button>
+    </div>
+
+    <!-- Results -->
+    <section id="results" class="results"></section>
+  </main>
+
+  <script src="search.js"></script>
+  <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script src="back4app-init.js"></script>
 </body>
 </html>

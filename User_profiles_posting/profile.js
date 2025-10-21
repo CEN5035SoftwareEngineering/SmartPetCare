@@ -1,0 +1,123 @@
+// Profile.js — Handles saving, displaying, and showing uploaded photos
+
+// To make profiles visible to other users (e.g., sitters browsing parent profiles):
+
+// Move from localStorage → a shared database (like Firebase, Supabase, or a Node.js backend).
+
+// The Profile.js script can then use fetch() or Firebase’s API to store and retrieve all profiles globally.
+
+// Profile.js — Handles saving, displaying, and showing uploaded photos
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("saveProfile");
+  const editBtn = document.getElementById("editProfile");
+  const form = document.getElementById("parentForm");
+  const displaySection = document.getElementById("savedProfile");
+  const displayDiv = document.getElementById("profileDisplay");
+
+  const parentPhotoInput = document.getElementById("parentPhoto");
+  const dogPhotoInput = document.getElementById("dogPhoto");
+
+  // Add preview containers
+  const parentPreview = document.createElement("div");
+  parentPreview.classList.add("preview");
+  parentPhotoInput.insertAdjacentElement("afterend", parentPreview);
+
+  const dogPreview = document.createElement("div");
+  dogPreview.classList.add("preview");
+  dogPhotoInput.insertAdjacentElement("afterend", dogPreview);
+
+  // Live preview when selecting new image
+  parentPhotoInput.addEventListener("change", () => previewImage(parentPhotoInput, parentPreview, false));
+  dogPhotoInput.addEventListener("change", () => previewImage(dogPhotoInput, dogPreview, true));
+
+  // Load profile if saved
+  const existingData = localStorage.getItem("petParentProfile");
+  if (existingData) showProfile(JSON.parse(existingData));
+
+  // Save profile
+  saveBtn.addEventListener("click", async () => {
+    const parentPhotoData = await getBase64(parentPhotoInput.files[0]);
+    const dogPhotoData = await getBase64(dogPhotoInput.files[0]);
+
+    const parentProfile = {
+      parentName: document.getElementById("parentName").value,
+      parentZip: document.getElementById("parentZip").value,
+      parentPhoto: parentPhotoData || "",
+      dogName: document.getElementById("dogName").value,
+      dogAge: document.getElementById("dogAge").value,
+      dogBreed: document.getElementById("dogBreed").value,
+      dogWeight: document.getElementById("dogWeight").value,
+      dogMeds: document.getElementById("dogMeds").value,
+      dogHypo: document.getElementById("dogHypo").value,
+      dogBio: document.getElementById("dogBio").value,
+      dogPhoto: dogPhotoData || ""
+    };
+
+    localStorage.setItem("petParentProfile", JSON.stringify(parentProfile));
+    showProfile(parentProfile);
+  });
+
+  // Edit profile
+  editBtn.addEventListener("click", () => {
+    const savedData = JSON.parse(localStorage.getItem("petParentProfile"));
+    if (savedData) {
+      document.getElementById("parentName").value = savedData.parentName;
+      document.getElementById("parentZip").value = savedData.parentZip;
+      document.getElementById("dogName").value = savedData.dogName;
+      document.getElementById("dogAge").value = savedData.dogAge;
+      document.getElementById("dogBreed").value = savedData.dogBreed;
+      document.getElementById("dogWeight").value = savedData.dogWeight;
+      document.getElementById("dogMeds").value = savedData.dogMeds;
+      document.getElementById("dogHypo").value = savedData.dogHypo;
+      document.getElementById("dogBio").value = savedData.dogBio;
+    }
+    form.classList.remove("hidden");
+    displaySection.classList.add("hidden");
+  });
+
+  // Convert image file to Base64
+  function getBase64(file) {
+    return new Promise((resolve) => {
+      if (!file) return resolve("");
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Preview image before saving
+  function previewImage(input, previewDiv, isDog) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      previewDiv.innerHTML = `<img src="${reader.result}" class="${isDog ? 'dog' : ''}" alt="Preview">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Display saved profile
+  function showProfile(data) {
+    let html = `
+      <div style="display:flex; align-items:center; flex-wrap:wrap;">
+        ${data.parentPhoto ? `<div><img src="${data.parentPhoto}" alt="Parent Photo"></div>` : ""}
+        ${data.dogPhoto ? `<div><img src="${data.dogPhoto}" class="dog-photo" alt="Dog Photo"></div>` : ""}
+      </div>
+
+      <p><strong>Name:</strong> ${data.parentName || "—"}</p>
+      <p><strong>Zip Code:</strong> ${data.parentZip || "—"}</p>
+      <h3>Dog Information</h3>
+      <p><strong>Name:</strong> ${data.dogName || "—"}</p>
+      <p><strong>Age:</strong> ${data.dogAge || "—"}</p>
+      <p><strong>Breed:</strong> ${data.dogBreed || "—"}</p>
+      <p><strong>Weight:</strong> ${data.dogWeight || "—"} lbs</p>
+      <p><strong>Medications:</strong> ${data.dogMeds || "—"}</p>
+      <p><strong>Hypoallergenic:</strong> ${data.dogHypo || "—"}</p>
+      <p><strong>Bio:</strong> ${data.dogBio || "—"}</p>
+    `;
+
+    displayDiv.innerHTML = html;
+    form.classList.add("hidden");
+    displaySection.classList.remove("hidden");
+  }
+});

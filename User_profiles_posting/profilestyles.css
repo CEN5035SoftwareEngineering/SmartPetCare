@@ -264,3 +264,166 @@ body {
   margin: auto;
   padding: 20px;
 }
+:root {
+  --light-gray: #DBDDDB;
+  --teal: #63B4B4;
+  --black: #0D1416;
+  --dark-gray: #808384;
+  --olive: #96b299;
+  --delete: #b65a5a;
+}
+
+/* Base styling */
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: var(--light-gray);
+  margin: 0;
+  padding: 0;
+  color: var(--black);
+  text-align: center;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-brand a {
+  text-decoration: none;
+  color: var(--teal);
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+.menu-icon {
+  display: none;
+  font-size: 1.8rem;
+  color: var(--light-gray);
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  background-color: var(--teal);
+}
+
+/* Responsive navbar */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: var(--black);
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    left: 0;
+  }
+
+  .menu-toggle:checked + .menu-icon + .nav-links {
+    display: flex;
+  }
+}
+
+/* Page Layout */
+.container {
+  max-width: 800px;
+  background-color: white;
+  margin: 100px auto 40px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+label {
+  font-weight: bold;
+}
+
+input, textarea, select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn {
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+}
+
+.btn.teal { background-color: var(--teal); }
+.btn.olive { background-color: var(--olive); }
+
+.hidden { display: none; }
+
+#profileDisplay {
+  text-align: left;
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+#profileDisplay img {
+  width: 120px;           /* Profile size limit */
+  height: 120px;
+  object-fit: cover;       /* Ensures it fills without distortion */
+  border-radius: 50%;      /* Default: circular profile image */
+  margin: 10px 15px 20px 0;
+  border: 2px solid var(--teal);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* Dog photo slightly different style */
+#profileDisplay img.dog-photo {
+  border-radius: 20%;      /* rounded square */
+  border-color: var(--olive);
+}
