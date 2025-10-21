@@ -7,27 +7,62 @@
   <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
+  <!-- Navbar -->
   <div class="navbar">
-    <a href="../index.html" class="home">Smart Pet Care</a>
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
-    <div class="navbar-links" id="navbarLinks">
-      <a href="../Searching/search.html">Search</a>
+    <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
+
+    <input type="checkbox" id="menu-toggle" class="menu-toggle">
+    <label for="menu-toggle" class="menu-icon">☰</label>
+
+    <div class="nav-links">
       <a href="../User_profiles_pages/profile.html">Profile</a>
+      <a href="../Searching/search.html">Search</a>
+      <a href="book.html">Book</a>
       <a href="../Feedback/feedback.html">Feedback</a>
     </div>
   </div>
 
+  <!-- Booking Form -->
   <div class="container">
-    <h1>Book a Sitter</h1>
-    <p>Select a sitter and confirm your booking details.</p>
-    <button class="btn teal">Choose Sitter</button>
-    <button class="btn olive">Confirm Booking</button>
+    <h1>Book a Trusted Sitter 🐶</h1>
+    <h2>Schedule care for your furry friend with ease and peace of mind.</h2>
+    <hr>
+
+    <form id="bookingForm" class="booking-form">
+      <div class="form-group">
+        <input type="text" id="name" placeholder="Your Full Name" required>
+      </div>
+
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Your Email Address" required>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="petName" placeholder="Your Pet’s Name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date" style="display:block;margin-bottom:6px;color:var(--dark-gray);">Booking Date</label>
+        <input type="date" id="date" required>
+      </div>
+
+      <div class="form-group">
+        <label for="time" style="display:block;margin-bottom:6px;color:var(--dark-gray);">Preferred Time</label>
+        <input type="time" id="time" required>
+      </div>
+
+      <div class="form-group">
+        <textarea id="notes" placeholder="Additional notes or instructions..." rows="4"></textarea>
+      </div>
+
+      <button type="submit" class="btn teal">Confirm Booking</button>
+    </form>
+
+    <p id="successMsg" class="success-msg" style="display:none;">
+      ✅ Your booking has been submitted successfully! A sitter will contact you soon.
+    </p>
   </div>
 
-  <script>
-    function toggleMenu() {
-      document.getElementById("navbarLinks").classList.toggle("active");
-    }
-  </script>
+  <script src="book.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,41 @@
+/* =========================================
+   FEEDBACK FORM STYLING
+   ========================================= */
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.feedback-form .form-group {
+  width: 100%;
+  max-width: 500px;
+}
+
+.feedback-form input,
+.feedback-form textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.feedback-form textarea {
+  resize: vertical;
+}
+
+.success-msg {
+  color: var(--olive);
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+  .feedback-form .form-group {
+    max-width: 90%;
+  }
+}
