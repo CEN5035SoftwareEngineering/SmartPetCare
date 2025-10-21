@@ -34,34 +34,37 @@ body {
 }
 
 /* Styling for the navbar */
-.navbar {
+navbar {
   background-color: var(--black);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 28px;
-  color: var(--light-gray);
+  padding: 14px 24px;
   position: sticky;
   top: 0;
-  width: 100%;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .nav-brand {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
   color: var(--teal);
-  letter-spacing: 0.5px;
 }
 
-.nav-toggle {
+/* Hide the checkbox input */
+.menu-toggle {
+  display: none;
+}
+
+/* Menu icon (for mobile) */
+.menu-icon {
   display: none;
   font-size: 1.8rem;
-  cursor: pointer;
   color: var(--light-gray);
+  cursor: pointer;
 }
 
+/* Nav links styling */
 .nav-links {
   display: flex;
   gap: 15px;
@@ -72,52 +75,27 @@ body {
   color: white;
   padding: 10px 18px;
   border-radius: 6px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  padding: 10px 15px;
   font-weight: bold;
-}
-.navbar a:hover {
-  background-color: #96b299; /* Olive Green */
-  border-radius: 6px;
+  transition: 0.3s;
 }
 
-.navbar .menu-icon {
-  display: none;
-  font-size: 26px;
-  cursor: pointer;
+.nav-links a:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
 
-/* Collapsible nav links */
-.navbar-links {
-  display: flex;
-  gap: 10px;
-}
-
-/* Button Colors */
+/* Button colors */
 .btn.teal {
   background-color: var(--teal);
 }
 
 .btn.olive {
-  background-color: var(--olive-green);
+  background-color: var(--olive);
 }
 
-.nav-links a:hover {
-  transform: scale(1.05);
-  opacity: 0.9;
-}
-
-/* =====================================
-   RESPONSIVE NAVBAR
-===================================== */
+/* ===== RESPONSIVE NAVIGATION ===== */
 @media (max-width: 768px) {
-  .nav-toggle {
+  .menu-icon {
     display: block;
   }
 
@@ -130,27 +108,26 @@ body {
     top: 60px;
     left: 0;
     padding: 10px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* When checkbox is checked, show menu */
+  .menu-toggle:checked + .menu-icon + .nav-links {
+    display: flex;
   }
 
   .nav-links a {
-    text-align: center;
     display: block;
     padding: 14px;
-  }
-
-  .nav-links.active {
-    display: flex;
+    text-align: center;
   }
 }
-/* Styling for the heading & body of the landing page */
+
+/* ===== LANDING PAGE ===== */
 #landing-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 80px); /* full height minus navbar */
-  text-align: center;
-  padding: 40px 20px;
+  height: calc(100vh - 70px);
 }
 
 .landing-container {
@@ -158,19 +135,18 @@ body {
   padding: 40px 60px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
 }
 
 h1 {
   color: var(--teal);
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   margin-bottom: 10px;
 }
 
 h2 {
   color: var(--dark-gray);
   font-weight: normal;
-  margin-bottom: 0;
-  font-size: 1.4rem;
 }
 
 hr {
