@@ -8,6 +8,7 @@
 
 // Profile.js — Handles saving, displaying, and showing uploaded photos
 document.addEventListener("DOMContentLoaded", () => {
+  // Pet Parent section
   const saveBtn = document.getElementById("saveProfile");
   const editBtn = document.getElementById("editProfile");
   const form = document.getElementById("parentForm");
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Load profile if saved
   const existingData = localStorage.getItem("petParentProfile");
-  if (existingData) showProfile(JSON.parse(existingData));
+  if (existingData) showParentProfile(JSON.parse(existingData));
 
   // Save profile
   saveBtn.addEventListener("click", async () => {
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     localStorage.setItem("petParentProfile", JSON.stringify(parentProfile));
-    showProfile(parentProfile);
+    showParentProfile(parentProfile);
   });
 
   // Edit profile
@@ -73,6 +74,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     form.classList.remove("hidden");
     displaySection.classList.add("hidden");
+  });
+
+  // Caretaker section
+  const saveCaretakerBtn = document.getElementById("saveCaretaker");
+  const editCaretakerBtn = document.getElementById("editCaretaker");
+  const caretakerForm = document.getElementById("caretakerForm");
+  const caretakerDisplaySection = document.getElementById("savedCaretaker");
+  const caretakerDisplayDiv = document.getElementById("caretakerDisplay");
+  const caretakerPhotoInput = document.getElementById("caretakerPhoto");
+
+  // Add caretaker preview container
+  const caretakerPreview = document.createElement("div");
+  caretakerPreview.classList.add("preview");
+  caretakerPhotoInput.insertAdjacentElement("afterend", caretakerPreview);
+
+  caretakerPhotoInput.addEventListener("change", () => previewImage(caretakerPhotoInput, caretakerPreview, false));
+
+  // Load caretaker profile if saved
+  const existingCaretakerData = localStorage.getItem("caretakerProfile");
+  if (existingCaretakerData) showCaretakerProfile(JSON.parse(existingCaretakerData));
+
+  // Save caretaker profile
+  saveCaretakerBtn.addEventListener("click", async () => {
+    const caretakerPhotoData = await getBase64(caretakerPhotoInput.files[0]);
+
+    const caretakerProfile = {
+      caretakerName: document.getElementById("caretakerName").value,
+      caretakerZip: document.getElementById("caretakerZip").value,
+      caretakerBio: document.getElementById("caretakerBio").value,
+      caretakerExp: document.getElementById("caretakerExp").value,
+      caretakerRate: document.getElementById("caretakerRate").value,
+      caretakerPhoto: caretakerPhotoData || ""
+    };
+
+    localStorage.setItem("caretakerProfile", JSON.stringify(caretakerProfile));
+    showCaretakerProfile(caretakerProfile);
+  });
+
+  // Edit caretaker profile
+  editCaretakerBtn.addEventListener("click", () => {
+    const savedData = JSON.parse(localStorage.getItem("caretakerProfile"));
+    if (savedData) {
+      document.getElementById("caretakerName").value = savedData.caretakerName;
+      document.getElementById("caretakerZip").value = savedData.caretakerZip;
+      document.getElementById("caretakerBio").value = savedData.caretakerBio;
+      document.getElementById("caretakerExp").value = savedData.caretakerExp;
+      document.getElementById("caretakerRate").value = savedData.caretakerRate;
+    }
+    caretakerForm.classList.remove("hidden");
+    caretakerDisplaySection.classList.add("hidden");
   });
 
   // Convert image file to Base64
@@ -96,8 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
     reader.readAsDataURL(file);
   }
 
-  // Display saved profile
-  function showProfile(data) {
+  // Display saved pet parent profile
+  function showParentProfile(data) {
     let html = `
       <div style="display:flex; align-items:center; flex-wrap:wrap;">
         ${data.parentPhoto ? `<div><img src="${data.parentPhoto}" alt="Parent Photo"></div>` : ""}
@@ -119,5 +170,24 @@ document.addEventListener("DOMContentLoaded", () => {
     displayDiv.innerHTML = html;
     form.classList.add("hidden");
     displaySection.classList.remove("hidden");
+  }
+
+  // Display saved caretaker profile
+  function showCaretakerProfile(data) {
+    let html = `
+      <div style="display:flex; align-items:center; flex-wrap:wrap;">
+        ${data.caretakerPhoto ? `<div><img src="${data.caretakerPhoto}" alt="Caretaker Photo"></div>` : ""}
+      </div>
+
+      <p><strong>Name:</strong> ${data.caretakerName || "—"}</p>
+      <p><strong>Zip Code:</strong> ${data.caretakerZip || "—"}</p>
+      <p><strong>Bio:</strong> ${data.caretakerBio || "—"}</p>
+      <p><strong>Experience:</strong> ${data.caretakerExp || "—"}</p>
+      <p><strong>Rate:</strong> $${data.caretakerRate || "—"} / hr</p>
+    `;
+
+    caretakerDisplayDiv.innerHTML = html;
+    caretakerForm.classList.add("hidden");
+    caretakerDisplaySection.classList.remove("hidden");
   }
 });

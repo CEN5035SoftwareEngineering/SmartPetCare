@@ -1,100 +1,210 @@
-<!-- This is where the user can create a profile and also a profile for their dog (two separate pages?) -->
+<!-- Smart Pet Care - Profile Page -->
 <!DOCTYPE html>
-<html>
-    <head>
-        <!--The introduction section of code-->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-        <link rel="stylesheet" href="profilestyles.css">
-        <!-- <script src="homescripts.js"></script> -->
+<html lang="en">
 
-        <!-- Latest compiled JavaScript -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> -->
-        
-        <!--My title & favicon-->
-        <title>Smart Pet Care</title>
-        <link rel="icon" type="image/x-icon" href="styles/favicon.png">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="profilestyles.css" />
 
-    </head>
-    <body>
+  <title>Smart Pet Care</title>
+  <link rel="icon" type="image/x-icon" href="styles/favicon.png" />
+</head>
+
+<body>
+  <!-- Navigation Bar -->
   <div class="navbar">
-    <!-- <a href="../index.html" class="home">Smart Pet Care</a> -->
-    <!-- <span class="menu-icon" onclick="toggleMenu()">☰</span> -->
     <label for="menu-toggle" class="menu-icon">☰</label>
     <div class="navbar-links" id="navbarLinks">
       <a href="../Searching/search.html">Search</a>
       <a href="../Rebooking/book.html">Book</a>
       <a href="../Feedback/feedback.html">Feedback</a>
+      <a href="../Messaging_platform/communication.html">Messaging</a>
     </div>
   </div>
 
-
-
-<main class="container">
+  <main class="container">
     <h1>My Profile</h1>
-    <p>Manage your account and your pet’s profile below.</p>
+    <p>Manage your account below</p>
 
-    <!-- Pet Parent Form -->
-    <form id="parentForm" class="profile-form">
-      <h2>Pet Parent Profile</h2>
-
-      <label>Upload My Photo:</label>
-      <input type="file" id="parentPhoto" accept="image/*" />
-
-      <label>Name:</label>
-      <input type="text" id="parentName" placeholder="Your name" />
-
-      <label>Zip Code:</label>
-      <input type="text" id="parentZip" placeholder="e.g., 33431" />
-
-      <h3>Dog Profile</h3>
-      <label>Dog Photo:</label>
-      <input type="file" id="dogPhoto" accept="image/*" />
-      <label>Dog Name:</label>
-      <input type="text" id="dogName" placeholder="e.g., Bella" />
-      <label>Age:</label>
-      <input type="number" id="dogAge" placeholder="e.g., 4" />
-      <label>Breed:</label>
-      <input type="text" id="dogBreed" placeholder="e.g., Golden Retriever" />
-      <label>Weight (lbs):</label>
-      <input type="number" id="dogWeight" placeholder="e.g., 65" />
-      <label>Medications:</label>
-      <input type="text" id="dogMeds" placeholder="List medications or none" />
-      <label>Hypoallergenic?</label>
-      <select id="dogHypo">
-        <option value="">Select...</option>
-        <option>Yes</option>
-        <option>No</option>
-      </select>
-      <label>Bio:</label>
-      <textarea id="dogBio" placeholder="Tell us about your dog's personality..."></textarea>
-      
+    <!-- Role selection (new) -->
+    <div id="roleSelect">
+      <p class="role-prompt">What type of profile would you like to create?</p>
       <div class="btn-group">
-        <button type="button" id="saveProfile" class="btn teal">Save Profile</button>
-        <button type="reset" class="btn olive">Clear</button>
+        <button id="chooseParent" class="btn teal">Create Pet Parent Profile</button>
+        <button id="chooseCaretaker" class="btn olive">Create Caretaker Profile</button>
       </div>
-    </form>
+    </div>
 
-    <!-- Saved Data Section -->
-    <section id="savedProfile" class="hidden">
-      <h2>Saved Profile Information</h2>
-      <div id="profileDisplay"></div>
-      <button id="editProfile" class="btn olive">Edit Profile</button>
-    </section>
+    <!-- Tab Buttons -->
+    <div id="profileTabs" class="hidden">
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="parentTab">Pet Parent</button>
+        <button class="tab-btn" data-tab="caretakerTab">Caretaker</button>
+      </div>
+
+      <!--  Pet parent  -->
+      <div id="parentTab" class="tab-content active">
+
+        <form id="parentForm" class="profile-form">
+          <h2>Pet Parent Profile</h2>
+
+          <!-- Owner Section -->
+          <section class="owner-section">
+            <label>Upload My Photo:</label>
+            <input type="file" id="parentPhoto" accept="image/*" />
+
+            <label>Name:</label>
+            <input type="text" id="parentName" placeholder="Your name" />
+
+            <label>Zip Code:</label>
+            <input type="text" id="parentZip" placeholder="e.g., 33431" />
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- Dog Section -->
+          <section class="dog-section">
+            <h3>Dog Profile</h3>
+
+            <label>Dog Photo:</label>
+            <input type="file" id="dogPhoto" accept="image/*" />
+
+            <label>Dog Name:</label>
+            <input type="text" id="dogName" placeholder="e.g., Bella" />
+
+            <label>Age:</label>
+            <input type="number" id="dogAge" placeholder="e.g., 4" />
+
+            <label>Breed:</label>
+            <input type="text" id="dogBreed" placeholder="e.g., Golden Retriever" />
+
+            <label>Weight (lbs):</label>
+            <input type="number" id="dogWeight" placeholder="e.g., 65" />
+
+            <label>Medications:</label>
+            <input type="text" id="dogMeds" placeholder="List medications or none" />
+
+            <label>Hypoallergenic?</label>
+            <select id="dogHypo">
+              <option value="">Select...</option>
+              <option>Yes</option>
+              <option>No</option>
+            </select>
+
+            <label>Bio:</label>
+            <textarea id="dogBio" placeholder="Tell us about your dog's personality..."></textarea>
+          </section>
+
+          <div class="btn-group">
+            <button type="button" id="saveProfile" class="btn teal">Save Profile</button>
+            <button type="reset" class="btn olive">Clear</button>
+          </div>
+        </form>
+
+        <!-- Display Saved Pet Parent Profile -->
+        <section id="savedProfile" class="hidden">
+          <h2>Saved Profile Information</h2>
+          <div id="profileDisplay"></div>
+          <button id="editProfile" class="btn olive">Edit Profile</button>
+        </section>
+      </div>
+
+      <!--  Caretaker  -->
+      <div id="caretakerTab" class="tab-content">
+
+        <form id="caretakerForm" class="profile-form">
+          <h2>Caretaker Profile</h2>
+
+          <label>Upload My Photo:</label>
+          <input type="file" id="caretakerPhoto" accept="image/*" />
+
+          <label>Name:</label>
+          <input type="text" id="caretakerName" placeholder="Your name" />
+
+          <label>Zip Code:</label>
+          <input type="text" id="caretakerZip" placeholder="e.g., 33431" />
+
+          <label>Bio:</label>
+          <textarea id="caretakerBio" placeholder="Tell pet owners about yourself..."></textarea>
+
+          <label>Experience:</label>
+          <input type="text" id="caretakerExp" placeholder="e.g., 2 years with dogs" />
+
+          <label>Rate (per hour):</label>
+          <input type="number" id="caretakerRate" placeholder="e.g., 15" />
+
+          <div class="btn-group">
+            <button type="button" id="saveCaretaker" class="btn teal">Save Caretaker Profile</button>
+            <button type="reset" class="btn olive">Clear</button>
+          </div>
+        </form>
+
+        <!-- Display Saved Caretaker Profile -->
+        <section id="savedCaretaker" class="hidden">
+          <h2>Saved Caretaker Profile</h2>
+          <div id="caretakerDisplay"></div>
+          <button id="editCaretaker" class="btn olive">Edit Profile</button>
+        </section>
+      </div>
+    </div>
   </main>
+
+  <!-- Main tab control and role switching logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const roleSelect = document.getElementById("roleSelect");
+      const profileTabs = document.getElementById("profileTabs");
+      const tabButtons = document.querySelectorAll(".tab-btn");
+      const tabContents = document.querySelectorAll(".tab-content");
+
+      const parentProfile = localStorage.getItem("petParentProfile");
+      const caretakerProfile = localStorage.getItem("caretakerProfile");
+
+      // If user has already saved a profile, skip the role selection
+      if (parentProfile) {
+        roleSelect.style.display = "none";
+        profileTabs.classList.remove("hidden");
+        showTab("parentTab");
+      } else if (caretakerProfile) {
+        roleSelect.style.display = "none";
+        profileTabs.classList.remove("hidden");
+        showTab("caretakerTab");
+      }
+
+      // If selecting a role from the buttons
+      document.getElementById("chooseParent").addEventListener("click", () => {
+        roleSelect.style.display = "none";
+        profileTabs.classList.remove("hidden");
+        showTab("parentTab");
+      });
+
+      document.getElementById("chooseCaretaker").addEventListener("click", () => {
+        roleSelect.style.display = "none";
+        profileTabs.classList.remove("hidden");
+        showTab("caretakerTab");
+      });
+
+      // Handle switching tabs manually
+      tabButtons.forEach((btn) => {
+        btn.addEventListener("click", () => showTab(btn.dataset.tab));
+      });
+
+      // For showing tabs
+      function showTab(tabId) {
+        tabButtons.forEach((b) => b.classList.toggle("active", b.dataset.tab === tabId));
+        tabContents.forEach((tab) => tab.classList.toggle("active", tab.id === tabId));
+      }
+    });
+  </script>
+
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+  <script>
+    Parse.initialize("YOUR_APP_ID", "YOUR_JAVASCRIPT_KEY");
+    Parse.serverURL = "https://parseapi.back4app.com/";
+  </script>
 
   <script src="Profile.js"></script>
 </body>
-</html>
 
-<!-- This is some possible code to save the profile -->
-<!-- const Caretaker = Parse.Object.extend("Caretaker");
-const caretaker = new Caretaker();
-caretaker.set("name", name);
-caretaker.set("bio", bio);
-caretaker.set("zip", zip);
-caretaker.set("rate", rate);
-caretaker.set("experience", experience);
-caretaker.save();
- -->
+</html>
