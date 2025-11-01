@@ -1,3 +1,76 @@
+
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { margin-bottom: .25rem; }
+    code, input, button, textarea, select { font-family: inherit; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    label { font-weight: 600; }
+    input, textarea, select { padding: .5rem; border-radius: 8px; border: 1px solid #ccc; width: 100%; }
+    button { padding: .6rem 1rem; border-radius: 10px; border: 1px solid #333; background: #fff; cursor: pointer; }
+    button:hover { background: #f2f2f2; }
+    .row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+    pre { background: #f7f7f7; padding: .75rem; border-radius: 8px; overflow:auto; max-height: 280px; }
+  
+  body {
+    background-color: #E0E3E1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #555555;
+    margin: 0;
+    padding: 0;
+  }
+
+  .card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 80%;
+    max-width: 600px;
+    margin: 3rem auto;
+  }
+
+  h1, h3 {
+    color: #68B0AB;
+    text-align: center;
+  }
+
+  label {
+    font-weight: 500;
+    display: block;
+    margin-top: 1rem;
+    color: #555555;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 0.3rem;
+  }
+
+  button {
+    background-color: #68B0AB;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.5rem;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #519a95;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    color: #777;
+  }
+
 /* =========================================
    FEEDBACK FORM STYLING
    ========================================= */
