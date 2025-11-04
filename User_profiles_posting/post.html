@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Pet Care</title>
   <link rel="icon" type="image/x-icon" href="styles/favicon.png">
-  <link rel="stylesheet" href="../styles/styles.css">
+  <link rel="stylesheet" href="profilestyles.css">
+  <!-- <link rel="stylesheet" href="../styles/styles.css"> -->
 </head>
 <body>
-  <!-- Navbar -->
+  <!-- Navbar
   <div class="navbar">
     <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
@@ -20,23 +21,29 @@
       <a href="post.html">Post</a>
       <a href="scroll_view.html">View Posts</a>
     </div>
-  </div>
+  </div> -->
 
-  <!-- Upload Form -->
+  <!-- Post Pet photo -->
   <div class="container">
-    <h1>Share Your Pet's Photo!</h1>
+    <h1>Post a Photo of your Dog!</h1>
     <h2>Upload a picture of your dog to share with the Smart Pet Care community.</h2>
     <hr>
 
-    <form id="postForm">
-      <div style="margin: 20px 0;">
-        <input type="text" id="username" placeholder="Your Name" required
-               style="padding:10px;width:60%;border-radius:6px;border:1px solid #ccc;">
+    <form id="postForm" class="profile-form">
+      <label>Upload Dog Photo:</label>
+      <input type="file" id="postPhoto" accept="image/*" required />
+
+      <label>Caption:</label>
+      <textarea id="postCaption" placeholder="Write a cute caption..." required></textarea>
+
+      <label>Your Name:</label>
+      <input type="text" id="postUser" placeholder="Enter your name" required />
+
+      <div class="btn-group">
+        <button type="submit" class="btn teal">Post</button>
+        <button type="reset" class="btn olive">Clear</button>
       </div>
-      <div style="margin: 20px 0;">
-        <input type="file" id="dogPhoto" accept="image/*" required>
-      </div>
-      <button type="submit" class="btn teal">Post Photo</button>
+    
     </form>
 
     <p id="successMsg" style="display:none;color:var(--olive);font-weight:bold;margin-top:15px;">
