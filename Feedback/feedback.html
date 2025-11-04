@@ -33,23 +33,34 @@
   <div class="card">
     <h3>Create Feedback</h3>
     <div class="grid">
-      <div>
+      <!-- <div>
         <label>Reviewer ID</label>
         <input id="reviewerId" placeholder="_User.objectId" />
       </div>
-      <div>
-        <label>Role</label>
+      <div> -->
+      
+      <div style="grid-column: 1 / -1; text-align: center;">
+  <label>Role</label>
+  <select id="role">
+    <option value="petParent">I am a Pet Parent reviewing a care taker!</option>
+    <option value="caretaker">I am a Caretaker reviewing a dog!</option>
+  </select>
+</div>
+      
+      
+      
+        <!-- <label>Role</label>
         <select id="role">
-          <option value="petParent">petParent (review caretaker)</option>
-          <option value="caretaker">caretaker (review dog)</option>
+          <option value="petParent">I am a Pet Parent reviewing a care taker!</option>
+          <option value="caretaker">I am a Caretaker reviewing a dog!</option>
         </select>
-      </div>
+      </div> -->
       <div>
-        <label>Caretaker Username (if petParent)</label>
+        <label>Caretaker Username (if Pet Parent)</label>
         <input id="revieweeCaretakerId" placeholder="Caretaker username" />
       </div>
       <div>
-        <label>Dog Username (if caretaker)</label>
+        <label>Dog Username (if Caretaker)</label>
         <input id="revieweeDogId" placeholder="Dog username" />
       </div>
       <div>
