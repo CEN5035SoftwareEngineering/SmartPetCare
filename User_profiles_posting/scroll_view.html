@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Pet Care</title>
   <link rel="icon" type="image/x-icon" href="styles/favicon.png">
-  <link rel="stylesheet" href="../styles/styles.css">
+  <link rel="stylesheet" href="profilestyles.css">
+  <!-- <link rel="stylesheet" href="../styles/styles.css"> -->
 </head>
 <body>
   <!-- Navbar -->
@@ -16,20 +17,16 @@
     <label for="menu-toggle" class="menu-icon">☰</label>
 
     <div class="nav-links">
-      <a href="profile.html">Profile</a>
-      <a href="post.html">Post</a>
-      <a href="scroll_view.html">View Posts</a>
+      <a href="../User_profiles_posting/profile.html">Profile</a>
+      <a href="../User_profiles_posting/post.html">Post</a>
     </div>
   </div>
 
   <!-- Scrollable Dog Feed -->
-  <div class="container">
-    <h1>🐾 Community Pet Gallery</h1>
-    <h2>See all the adorable dogs shared by our community members!</h2>
-    <hr>
+  <main class="container">
 
-    <div id="postFeed" class="feed"></div>
-  </div>
+    <div id="feedContainer" class="feed"></div>
+  </main>
 
   <script src="scroll.js" defer></script>
 </body>
