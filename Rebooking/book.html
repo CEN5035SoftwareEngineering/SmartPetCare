@@ -1,16 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book a Sitter - Smart Pet Care</title>
-  <link rel="stylesheet" href="../styles/styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book Dog Walking — Smart Pet Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="book.css">
+  <script src="https://js.stripe.com/v3"></script>
 </head>
-<body>
-  <!-- Navbar -->
-  <div class="navbar">
-    <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
+<body class="min-h-screen bg-gradient-to-b from-[var(--bg)] to-[#f8fafc] text-[var(--text)]">
+
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <div class="nav-brand"><a href="index.html">Smart Pet Care</a></div>
+
+    <!-- Hidden checkbox to control menu -->
     <input type="checkbox" id="menu-toggle" class="menu-toggle">
     <label for="menu-toggle" class="menu-icon">☰</label>
 
@@ -23,47 +28,123 @@
     </div>
   </div>
 
-  <!-- Booking Form -->
-  <div class="container">
-    <h1>Book a Trusted Sitter 🐶</h1>
-    <h2>Schedule care for your furry friend with ease and peace of mind.</h2>
-    <hr>
+  <main class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-[1fr_380px] gap-6">
+    <section>
+      <h1 class="text-2xl md:text-3xl font-bold mb-4">Give Your Dog the Best — Book Dog Walking</h1>
 
-    <form id="bookingForm" class="booking-form">
-      <div class="form-group">
-        <input type="text" id="name" placeholder="Your Full Name" required>
+      <div id="selectedService" class="card p-4 flex items-start gap-3">
+        <img src="https://picsum.photos/seed/groom/96/96" alt="Service" class="h-12 w-12 rounded-lg object-cover">
+        <div class="flex-1">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="font-semibold" id="svcName">Dog Walking</div>
+              <div class="text-[var(--text-muted)] text-sm" id="svcDesc">
+                A refreshing walk designed to keep your dog happy, healthy, and full of energy. Includes exercise,
+                hydration breaks, and plenty of love along the way.
+              </div>
+              <div class="text-sm mt-1">
+                <span id="svcPrice" class="font-semibold">$35</span> · <span id="svcDuration">45 minutes</span>
+              </div>
+            </div>
+            <a href="#" id="changeService" class="text-sm text-[var(--brand-600)] underline whitespace-nowrap">Change</a>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <input type="email" id="email" placeholder="Your Email Address" required>
+      <div id="serviceList" class="card mt-4 p-4 hidden">
+        <div class="divide-y">
+          <div class="py-4 flex items-center gap-3">
+            <img src="https://picsum.photos/seed/pawdicure/96/96" class="h-12 w-12 rounded-lg object-cover" alt="Pawdicure">
+            <div class="flex-1">
+              <div class="font-semibold">Pawdicure</div>
+              <div class="text-sm text-[var(--text-muted)]">Nail trimming and paw pad care.</div>
+              <div class="text-sm">$20 · 15 minutes</div>
+            </div>
+            <button data-name="Pawdicure" data-price="$20" data-duration="15 minutes" data-desc="Nail trimming and paw pad care."
+                    class="pickService px-4 py-2 rounded-full border hover:bg-slate-50">Select</button>
+          </div>
+
+          <div class="py-4 flex items-center gap-3">
+            <img src="https://picsum.photos/seed/wash/96/96" class="h-12 w-12 rounded-lg object-cover" alt="Quick Wash & Dry">
+            <div class="flex-1">
+              <div class="font-semibold">Quick Wash & Dry</div>
+              <div class="text-sm text-[var(--text-muted)]">Fast and fresh—perfect in between grooms.</div>
+              <div class="text-sm">$35 · 30 minutes</div>
+            </div>
+            <button data-name="Quick Wash & Dry" data-price="$35" data-duration="30 minutes" data-desc="Fast and fresh—perfect in between grooms."
+                    class="pickService px-4 py-2 rounded-full border hover:bg-slate-50">Select</button>
+          </div>
+
+          <div class="py-4 flex items-center gap-3">
+            <img src="https://picsum.photos/seed/full/96/96" class="h-12 w-12 rounded-lg object-cover" alt="Full Grooming">
+            <div class="flex-1">
+              <div class="font-semibold">Full Grooming</div>
+              <div class="text-sm text-[var(--text-muted)]">Bath, haircut, nails, ears, and brushing.</div>
+              <div class="text-sm">$85 · 90 minutes</div>
+            </div>
+            <button data-name="Full Grooming" data-price="$85" data-duration="90 minutes" data-desc="Bath, haircut, nails, ears, and brushing."
+                    class="pickService px-4 py-2 rounded-full border hover:bg-slate-50">Select</button>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <input type="text" id="petName" placeholder="Your Pet’s Name" required>
+      <div class="mt-6">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="font-semibold">Choose a date</h2>
+          <div class="flex gap-2">
+            <button id="prevWeek" class="px-2 py-1 rounded-md border hover:bg-slate-50" aria-label="Previous days">‹</button>
+            <button id="nextWeek" class="px-2 py-1 rounded-md border hover:bg-slate-50" aria-label="Next days">›</button>
+          </div>
+        </div>
+        <div id="dateStrip" class="flex gap-2 overflow-x-auto pb-2"></div>
       </div>
 
-      <div class="form-group">
-        <label for="date" style="display:block;margin-bottom:6px;color:var(--dark-gray);">Booking Date</label>
-        <input type="date" id="date" required>
+      <div class="mt-4 grid gap-4">
+        <div>
+          <div class="text-sm text-[var(--text-muted)] mb-2">Morning</div>
+          <div id="timesMorning" class="flex flex-wrap gap-3"></div>
+        </div>
+        <div>
+          <div class="text-sm text-[var(--text-muted)] mb-2">Afternoon</div>
+          <div id="timesAfternoon" class="flex flex-wrap gap-3"></div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="time" style="display:block;margin-bottom:6px;color:var(--dark-gray);">Preferred Time</label>
-        <input type="time" id="time" required>
+      <div class="mt-6 card p-4">
+        <h2 class="font-semibold mb-3">Payment method</h2>
+        <p class="text-sm text-[var(--text-muted)] mb-3">
+          We securely collect your card with Stripe. You won’t be able to book until card details are entered.
+        </p>
+        <form id="paymentForm" class="grid gap-3">
+          <div id="card-element" class="border rounded-md p-3"></div>
+          <div id="card-errors" class="text-sm text-red-600"></div>
+          <label class="inline-flex items-start gap-2 text-sm">
+            <input id="agree" type="checkbox" class="mt-1">
+            <span>I agree to the <a href="#" class="underline">Terms</a> and <a href="#" class="underline">Cancellation Policy</a>.</span>
+          </label>
+        </form>
       </div>
 
-      <div class="form-group">
-        <textarea id="notes" placeholder="Additional notes or instructions..." rows="4"></textarea>
+      <div class="mt-4">
+        <button id="bookBtn" class="h-11 px-6 rounded-md bg-[var(--brand)] text-white disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          Book Appointment
+        </button>
+        <span id="status" class="ml-3 text-sm text-[var(--text-muted)]"></span>
       </div>
+    </section>
 
-      <button type="submit" class="btn teal">Confirm Booking</button>
-    </form>
+    <!-- If you actually want a sidebar, uncomment and use this block instead of the stray closers
+    <aside class="card overflow-hidden">
+      <div class="h-44 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1600&auto=format&fit=crop');"></div>
+      <div class="p-5">
+        <h3 class="text-xl font-semibold">The Scrub Pup</h3>
+        <p class="text-sm text-[var(--text-muted)] mt-2">A cozy grooming studio in Brooklyn…</p>
+      </div>
+    </aside>
+    -->
+  </main>
 
-    <p id="successMsg" class="success-msg" style="display:none;">
-      ✅ Your booking has been submitted successfully! A sitter will contact you soon.
-    </p>
-  </div>
-
-  <script src="book.js" defer></script>
+  <!-- put your page JS last so DOM exists when it runs -->
+  <script src="book.js"></script>
 </body>
 </html>

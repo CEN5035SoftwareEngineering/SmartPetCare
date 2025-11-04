@@ -1,42 +1,225 @@
-/* =========================================
-   BOOKING FORM STYLING
-   ========================================= */
-.booking-form {
-  display: flex;
+
+/* ---------- Color Scheme (same palette) ---------- */
+:root{
+  --light-gray: #DBDDDB;
+  --teal: #63B4B4;
+  --black: #0D1416;
+  --dark-gray: #808384;
+  --olive-green: #96b299;
+
+  /* Neutrals for cards/lines */
+  --white: #ffffff;
+  --border: #E5E7EB;           /* slate-200-ish */
+  --muted: #5B6770;            /* slate-600-ish */
+
+  /* Brand alias (used by button + accents) */
+  --brand: var(--teal);
+  --brand-600: #4aa3a3;        /* darker hover */
+  --focus: #2dd4bf;            /* focus ring teal-ish */
+
+  /* Rounded + shadow */
+  --r-xl: 1rem;
+  --r-2xl: 1.25rem;
+  --shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+
+/* ---------- Base ---------- */
+html { box-sizing: border-box; font-size: 16px; scroll-behavior: smooth; }
+*,*::before,*::after { box-sizing: inherit; }
+
+body{
+  margin: 0;
+  color: var(--black);
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--light-gray);
+  /* the page already has a fixed navbar */
+  padding-top: 70px;
+}
+
+/* ---------- Navbar (matches styles.css) ---------- */
+.navbar{
+  background: var(--teal);
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .8em 1.2em;
+  box-shadow: 0 2px 5px rgba(0,0,0,.2);
+}
+.nav-brand a{ color:#fff; text-decoration:none; font-weight:700; font-size:1.5rem; }
+.nav-links{ display:flex; gap:15px; }
+.nav-links a{
+  color:#fff; text-decoration:none; padding:10px 18px; border-radius:6px; font-weight:700; transition:.25s;
+}
+.nav-links a:hover{ background: var(--olive-green); }
+.menu-toggle{ display:none; }
+.menu-icon{ display:none; color:#fff; font-size:1.8rem; cursor:pointer; }
+
+@media (max-width:768px){
+  .menu-icon{ display:block; }
+  .nav-links{
+    display:none; flex-direction:column; background:var(--teal);
+    position:absolute; top:60px; left:0; right:0; padding:10px 0;
+  }
+  .menu-toggle:checked + .menu-icon + .nav-links{ display:flex; }
+  .nav-links a{ display:block; text-align:center; padding:14px; }
+}
+
+/* ---------- Shared components ---------- */
+.card{
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  box-shadow: var(--shadow);
+}
+
+/* subtle “badge” text */
+.muted{ color: var(--muted); }
+
+/* primary button (used for Book) */
+.btn-primary{
+  background: var(--brand);
+  color:#fff; border:0; border-radius:.6rem; font-weight:700;
+  height: 44px; padding: 0 20px; cursor: pointer;
+  transition: background .2s ease, opacity .2s ease;
+}
+.btn-primary:hover{ background: var(--brand-600); }
+.btn-primary:disabled{ opacity:.5; cursor:not-allowed; }
+.btn-primary:focus{ outline:2px solid var(--focus); outline-offset:2px; }
+
+/* ghost / outline controls */
+.btn-ghost{
+  background: transparent; border:1px solid var(--border);
+  border-radius: .6rem; height:36px; padding:0 10px; cursor:pointer;
+}
+.btn-ghost:hover{ background:#f7f7f7; }
+
+/* ---------- Service Picker ---------- */
+#selectedService img{ border-radius: .75rem; }
+#serviceList .divide-y > * + *{ border-top:1px solid var(--border); }
+#serviceList .pickService{
+  border:1px solid var(--border); border-radius:999px; padding:.5rem 1rem;
+  background:#fff; cursor:pointer; transition: background .2s ease;
+}
+#serviceList .pickService:hover{ background:#f8fafc; }
+
+/* ---------- Date Strip ---------- */
+/* Date strip (make it look like the 2nd screenshot) */
+#dateStrip {
+  gap: .5rem;            /* tighter gap than default */
+  padding-bottom: .25rem;
+}
+
+.date-pill {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--black);
+  border-radius: 14px;
+  padding: .6rem .9rem;
+  min-width: 84px;                 /* consistent width */
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  cursor: pointer;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
-  margin-top: 20px;
+  line-height: 1.15;
+  transition: background .2s, color .2s, border-color .2s, transform .05s;
 }
 
-.booking-form .form-group {
-  width: 100%;
-  max-width: 500px;
-  text-align: left;
+.date-pill:active { transform: translateY(1px); }
+
+.date-pill .top   { font-weight: 700; font-size: .9rem; }
+.date-pill .bot   { font-size: .72rem; color: var(--dark-gray); margin-top: .15rem; }
+
+/* selected pill */
+.date-pill[aria-selected="true"] {
+  background: var(--brand);
+  color: var(--teal);
+  border-color: transparent;
+}
+.date-pill[aria-selected="true"] .bot { color: var(--teal); }
+
+/* prev/next chevrons to match look */
+#prevWeek, #nextWeek {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--black);
+  border-radius: 8px;
+  height: 34px; width: 34px;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.04);
+}
+#prevWeek:hover, #nextWeek:hover { background: #f8fafc; }
+
+#dateStrip{
+  /* parent is flex via HTML classes; we control button look here */
+}
+#dateStrip button{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius: 14px;
+  padding: .6rem .9rem;
+  min-width: 84px;
+  text-align:center;
+  line-height:1.1;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  cursor:pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+#dateStrip button[data-active="true"]{
+  background: var(--brand);
+  color: #fff;
+  border-color: transparent;
+}
+#dateStrip button:focus{ outline:2px solid var(--focus); outline-offset:2px; }
+
+/* ---------- Time Buttons ---------- */
+#timesMorning button,
+#timesAfternoon button{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius: 14px;
+  padding: .5rem .9rem;
+  cursor:pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+#timesMorning button[data-active="true"],
+#timesAfternoon button[data-active="true"]{
+  background:#0f172a; /* near slate-900 */
+  color:#fff;
+  border-color: transparent;
+}
+#timesMorning button:hover,
+#timesAfternoon button:hover{ background:#f8fafc; }
+
+/* ---------- Payment / Stripe Card Element ---------- */
+#paymentForm #card-element{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:.6rem;
+  padding:12px;
+}
+#card-errors{ margin-top:4px; }
+
+/* Checkbox / label alignment */
+#paymentForm label input[type="checkbox"]{
+  width:16px; height:16px; accent-color: var(--brand);
 }
 
-.booking-form input,
-.booking-form textarea {
-  width: 100%;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  font-family: "Segoe UI", Arial, sans-serif;
-}
+/* ---------- Headings ---------- */
+h1{ margin:0 0 .5rem; color: var(--teal); }
+h2{ margin:0; color: var(--black); }
 
-.booking-form textarea {
-  resize: vertical;
-}
+/* ---------- Layout helpers ---------- */
+main{ /* main has utility classes already; this is safety */ }
+section{ min-width:0; } /* prevent overflow with flex/grid */
 
-.success-msg {
-  color: var(--olive);
-  font-weight: bold;
-  margin-top: 15px;
-}
+/* ---------- Small utilities ---------- */
+.rounded-xl{ border-radius: var(--r-xl); }
+.text-muted{ color: var(--muted); }
 
-@media (max-width: 768px) {
-  .booking-form .form-group {
-    max-width: 90%;
-  }
+/* ---------- Responsive niceties ---------- */
+@media (max-width: 1024px){
+  /* tighten card padding a bit on smaller screens if you like */
 }
