@@ -1,24 +1,109 @@
 // Profile.js — Handles saving, displaying, and showing uploaded photos
-
-// To make profiles visible to other users (e.g., sitters browsing parent profiles):
-
-// Move from localStorage → a shared database (like Firebase, Supabase, or a Node.js backend).
-
-// The Profile.js script can then use fetch() or Firebase’s API to store and retrieve all profiles globally.
-
-// Profile.js — Handles saving, displaying, and showing uploaded photos
 document.addEventListener("DOMContentLoaded", () => {
-  // Pet Parent section
+  // Role & view logic
+  const roleSelect = document.getElementById("roleSelect");
+  const profileTabs = document.getElementById("profileTabs");
+  const tabButtons = document.querySelectorAll(".tab-btn");
+  const tabContents = document.querySelectorAll(".tab-content");
+  const profileRoleTabs = document.getElementById("profileRoleTabs");
+  const contentTabs = document.getElementById("contentTabs");
+  const contentTabBtns = document.querySelectorAll(".content-tab-btn");
+  const contentTabSections = document.querySelectorAll(".content-tab");
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  const bookBtn = document.getElementById("bookCaretaker");
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const publicId = urlParams.get("id");
+  const isPublicView = !!publicId;
+
+  const role = localStorage.getItem("userRole");
+  const parentData = localStorage.getItem("petParentProfile");
+  const caretakerData = localStorage.getItem("caretakerProfile");
+
+  // Public profile view
+  if (isPublicView) {
+    profileTabs.classList.add("hidden");
+    roleSelect.classList.add("hidden");
+    contentTabs.classList.remove("hidden");
+
+    if (caretakerData) {
+      showCaretakerProfile(JSON.parse(caretakerData));
+      bookBtn.classList.remove("hidden");
+    } else if (parentData) {
+      showParentProfile(JSON.parse(parentData));
+    }
+    return;
+  }
+
+  // Logout button
+  logoutBtn.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "profile.html"; // reset page
+  });
+
+  // Load saved profile if exists
+  if (role === "petParent" && parentData) {
+    roleSelect.classList.add("hidden");
+    profileTabs.classList.remove("hidden");
+    profileRoleTabs.classList.add("hidden");
+    showTab("parentTab");
+    showParentProfile(JSON.parse(parentData));
+    contentTabs.classList.remove("hidden");
+  } else if (role === "caretaker" && caretakerData) {
+    roleSelect.classList.add("hidden");
+    profileTabs.classList.remove("hidden");
+    profileRoleTabs.classList.add("hidden");
+    showTab("caretakerTab");
+    showCaretakerProfile(JSON.parse(caretakerData));
+    bookBtn.classList.remove("hidden");
+    contentTabs.classList.remove("hidden");
+  }
+
+  // Tab switching (parent vs caretaker)
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => showTab(btn.dataset.tab));
+  });
+
+  function showTab(tabId) {
+    tabButtons.forEach((b) => b.classList.toggle("active", b.dataset.tab === tabId));
+    tabContents.forEach((tab) => tab.classList.toggle("active", tab.id === tabId));
+  }
+
+  // Content Tabs - Posts vs Feedback
+  contentTabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.contentTab;
+      contentTabBtns.forEach((b) => b.classList.toggle("active", b.dataset.contentTab === target));
+      contentTabSections.forEach((s) => s.classList.toggle("active", s.id === target));
+    });
+  });
+
+  // Role selection logic
+  document.getElementById("chooseParent").addEventListener("click", () => {
+    localStorage.setItem("userRole", "petParent");
+    roleSelect.classList.add("hidden");
+    profileTabs.classList.remove("hidden");
+    showTab("parentTab");
+  });
+
+  document.getElementById("chooseCaretaker").addEventListener("click", () => {
+    localStorage.setItem("userRole", "caretaker");
+    roleSelect.classList.add("hidden");
+    profileTabs.classList.remove("hidden");
+    showTab("caretakerTab");
+  });
+
+  // -----------------------
+  // Pet Parent logic
   const saveBtn = document.getElementById("saveProfile");
   const editBtn = document.getElementById("editProfile");
   const form = document.getElementById("parentForm");
   const displaySection = document.getElementById("savedProfile");
   const displayDiv = document.getElementById("profileDisplay");
-
   const parentPhotoInput = document.getElementById("parentPhoto");
   const dogPhotoInput = document.getElementById("dogPhoto");
 
-  // Add preview containers
   const parentPreview = document.createElement("div");
   parentPreview.classList.add("preview");
   parentPhotoInput.insertAdjacentElement("afterend", parentPreview);
@@ -27,15 +112,13 @@ document.addEventListener("DOMContentLoaded", () => {
   dogPreview.classList.add("preview");
   dogPhotoInput.insertAdjacentElement("afterend", dogPreview);
 
-  // Live preview when selecting new image
   parentPhotoInput.addEventListener("change", () => previewImage(parentPhotoInput, parentPreview, false));
   dogPhotoInput.addEventListener("change", () => previewImage(dogPhotoInput, dogPreview, true));
 
-  // Load profile if saved
-  const existingData = localStorage.getItem("petParentProfile");
-  if (existingData) showParentProfile(JSON.parse(existingData));
+  if (parentData && !isPublicView) {
+    showParentProfile(JSON.parse(parentData));
+  }
 
-  // Save profile
   saveBtn.addEventListener("click", async () => {
     const parentPhotoData = await getBase64(parentPhotoInput.files[0]);
     const dogPhotoData = await getBase64(dogPhotoInput.files[0]);
@@ -56,27 +139,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("petParentProfile", JSON.stringify(parentProfile));
     showParentProfile(parentProfile);
+    contentTabs.classList.remove("hidden");
+    profileRoleTabs.classList.add("hidden");
   });
 
-  // Edit profile
   editBtn.addEventListener("click", () => {
     const savedData = JSON.parse(localStorage.getItem("petParentProfile"));
-    if (savedData) {
-      document.getElementById("parentName").value = savedData.parentName;
-      document.getElementById("parentZip").value = savedData.parentZip;
-      document.getElementById("dogName").value = savedData.dogName;
-      document.getElementById("dogAge").value = savedData.dogAge;
-      document.getElementById("dogBreed").value = savedData.dogBreed;
-      document.getElementById("dogWeight").value = savedData.dogWeight;
-      document.getElementById("dogMeds").value = savedData.dogMeds;
-      document.getElementById("dogHypo").value = savedData.dogHypo;
-      document.getElementById("dogBio").value = savedData.dogBio;
-    }
+    if (!savedData) return;
+    document.getElementById("parentName").value = savedData.parentName;
+    document.getElementById("parentZip").value = savedData.parentZip;
+    document.getElementById("dogName").value = savedData.dogName;
+    document.getElementById("dogAge").value = savedData.dogAge;
+    document.getElementById("dogBreed").value = savedData.dogBreed;
+    document.getElementById("dogWeight").value = savedData.dogWeight;
+    document.getElementById("dogMeds").value = savedData.dogMeds;
+    document.getElementById("dogHypo").value = savedData.dogHypo;
+    document.getElementById("dogBio").value = savedData.dogBio;
+
     form.classList.remove("hidden");
     displaySection.classList.add("hidden");
   });
 
-  // Caretaker section
+  function showParentProfile(data) {
+    let html = `
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 20px;">
+          ${data.parentPhoto ? `<img src="${data.parentPhoto}" alt="Parent Photo" class="circle-photo">` : ""}
+          <div>
+            <p><strong>Name:</strong> ${data.parentName || "—"}</p>
+            <p><strong>Zip Code:</strong> ${data.parentZip || "—"}</p>
+          </div>
+        </div>
+        <hr class="section-divider" style="width: 100%; border-top: 1px solid #ccc;" />
+        <div style="display: flex; align-items: center; gap: 20px;">
+          ${data.dogPhoto ? `<img src="${data.dogPhoto}" alt="Dog Photo" class="circle-photo">` : ""}
+          <div>
+            <h3>Dog Information</h3>
+            <p><strong>Name:</strong> ${data.dogName || "—"}</p>
+            <p><strong>Age:</strong> ${data.dogAge || "—"}</p>
+            <p><strong>Breed:</strong> ${data.dogBreed || "—"}</p>
+            <p><strong>Weight:</strong> ${data.dogWeight || "—"} lbs</p>
+            <p><strong>Medications:</strong> ${data.dogMeds || "—"}</p>
+            <p><strong>Hypoallergenic:</strong> ${data.dogHypo || "—"}</p>
+            <p><strong>Bio:</strong> ${data.dogBio || "—"}</p>
+          </div>
+        </div>
+      </div>
+    `;
+    displayDiv.innerHTML = html;
+    form.classList.add("hidden");
+    displaySection.classList.remove("hidden");
+  }
+
+  // -----------------------
+  // Caretaker logic
   const saveCaretakerBtn = document.getElementById("saveCaretaker");
   const editCaretakerBtn = document.getElementById("editCaretaker");
   const caretakerForm = document.getElementById("caretakerForm");
@@ -84,18 +200,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const caretakerDisplayDiv = document.getElementById("caretakerDisplay");
   const caretakerPhotoInput = document.getElementById("caretakerPhoto");
 
-  // Add caretaker preview container
   const caretakerPreview = document.createElement("div");
   caretakerPreview.classList.add("preview");
   caretakerPhotoInput.insertAdjacentElement("afterend", caretakerPreview);
-
   caretakerPhotoInput.addEventListener("change", () => previewImage(caretakerPhotoInput, caretakerPreview, false));
 
-  // Load caretaker profile if saved
-  const existingCaretakerData = localStorage.getItem("caretakerProfile");
-  if (existingCaretakerData) showCaretakerProfile(JSON.parse(existingCaretakerData));
+  if (caretakerData && !isPublicView) {
+    showCaretakerProfile(JSON.parse(caretakerData));
+    bookBtn.classList.remove("hidden");
+  }
 
-  // Save caretaker profile
   saveCaretakerBtn.addEventListener("click", async () => {
     const caretakerPhotoData = await getBase64(caretakerPhotoInput.files[0]);
 
@@ -110,23 +224,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("caretakerProfile", JSON.stringify(caretakerProfile));
     showCaretakerProfile(caretakerProfile);
+    contentTabs.classList.remove("hidden");
+    profileRoleTabs.classList.add("hidden");
   });
 
-  // Edit caretaker profile
   editCaretakerBtn.addEventListener("click", () => {
     const savedData = JSON.parse(localStorage.getItem("caretakerProfile"));
-    if (savedData) {
-      document.getElementById("caretakerName").value = savedData.caretakerName;
-      document.getElementById("caretakerZip").value = savedData.caretakerZip;
-      document.getElementById("caretakerBio").value = savedData.caretakerBio;
-      document.getElementById("caretakerExp").value = savedData.caretakerExp;
-      document.getElementById("caretakerRate").value = savedData.caretakerRate;
-    }
+    if (!savedData) return;
+    document.getElementById("caretakerName").value = savedData.caretakerName;
+    document.getElementById("caretakerZip").value = savedData.caretakerZip;
+    document.getElementById("caretakerBio").value = savedData.caretakerBio;
+    document.getElementById("caretakerExp").value = savedData.caretakerExp;
+    document.getElementById("caretakerRate").value = savedData.caretakerRate;
+
     caretakerForm.classList.remove("hidden");
     caretakerDisplaySection.classList.add("hidden");
   });
 
-  // Convert image file to Base64
+  function showCaretakerProfile(data) {
+    let html = `
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 20px;">
+          ${data.caretakerPhoto ? `<img src="${data.caretakerPhoto}" alt="Caretaker Photo" class="circle-photo">` : ""}
+          <div>
+            <h3>Caretaker Information</h3>
+            <p><strong>Name:</strong> ${data.caretakerName || "—"}</p>
+            <p><strong>Zip Code:</strong> ${data.caretakerZip || "—"}</p>
+            <p><strong>Bio:</strong> ${data.caretakerBio || "—"}</p>
+            <p><strong>Experience:</strong> ${data.caretakerExp || "—"}</p>
+            <p><strong>Rate:</strong> $${data.caretakerRate || "—"} / hr</p>
+          </div>
+        </div>
+      </div>
+    `;
+    caretakerDisplayDiv.innerHTML = html;
+    caretakerForm.classList.add("hidden");
+    caretakerDisplaySection.classList.remove("hidden");
+  }
+
   function getBase64(file) {
     return new Promise((resolve) => {
       if (!file) return resolve("");
@@ -136,7 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Preview image before saving
   function previewImage(input, previewDiv, isDog) {
     const file = input.files[0];
     if (!file) return;
@@ -145,49 +279,5 @@ document.addEventListener("DOMContentLoaded", () => {
       previewDiv.innerHTML = `<img src="${reader.result}" class="${isDog ? 'dog' : ''}" alt="Preview">`;
     };
     reader.readAsDataURL(file);
-  }
-
-  // Display saved pet parent profile
-  function showParentProfile(data) {
-    let html = `
-      <div style="display:flex; align-items:center; flex-wrap:wrap;">
-        ${data.parentPhoto ? `<div><img src="${data.parentPhoto}" alt="Parent Photo"></div>` : ""}
-        ${data.dogPhoto ? `<div><img src="${data.dogPhoto}" class="dog-photo" alt="Dog Photo"></div>` : ""}
-      </div>
-
-      <p><strong>Name:</strong> ${data.parentName || "—"}</p>
-      <p><strong>Zip Code:</strong> ${data.parentZip || "—"}</p>
-      <h3>Dog Information</h3>
-      <p><strong>Name:</strong> ${data.dogName || "—"}</p>
-      <p><strong>Age:</strong> ${data.dogAge || "—"}</p>
-      <p><strong>Breed:</strong> ${data.dogBreed || "—"}</p>
-      <p><strong>Weight:</strong> ${data.dogWeight || "—"} lbs</p>
-      <p><strong>Medications:</strong> ${data.dogMeds || "—"}</p>
-      <p><strong>Hypoallergenic:</strong> ${data.dogHypo || "—"}</p>
-      <p><strong>Bio:</strong> ${data.dogBio || "—"}</p>
-    `;
-
-    displayDiv.innerHTML = html;
-    form.classList.add("hidden");
-    displaySection.classList.remove("hidden");
-  }
-
-  // Display saved caretaker profile
-  function showCaretakerProfile(data) {
-    let html = `
-      <div style="display:flex; align-items:center; flex-wrap:wrap;">
-        ${data.caretakerPhoto ? `<div><img src="${data.caretakerPhoto}" alt="Caretaker Photo"></div>` : ""}
-      </div>
-
-      <p><strong>Name:</strong> ${data.caretakerName || "—"}</p>
-      <p><strong>Zip Code:</strong> ${data.caretakerZip || "—"}</p>
-      <p><strong>Bio:</strong> ${data.caretakerBio || "—"}</p>
-      <p><strong>Experience:</strong> ${data.caretakerExp || "—"}</p>
-      <p><strong>Rate:</strong> $${data.caretakerRate || "—"} / hr</p>
-    `;
-
-    caretakerDisplayDiv.innerHTML = html;
-    caretakerForm.classList.add("hidden");
-    caretakerDisplaySection.classList.remove("hidden");
   }
 });
