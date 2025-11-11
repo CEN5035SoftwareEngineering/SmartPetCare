@@ -316,3 +316,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 });
+
+//connect to the posting page
+document.getElementById('goToPostPage').addEventListener('click', () => {
+  window.location.href = '../User_profiles_posting/post.html'; // Adjust path if needed
+});
