@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Check if user is logged in ---
   const currentUser = Parse.User.current();
-  // if (!currentUser) {
-  //   alert("You must be logged in to view this page.");
-  //   window.location.href = "../User_login_signup/login.html";
-  //   return;
-  // }
+  if (!currentUser) {
+    alert("You must be logged in to view this page.");
+    window.location.href = "../User_login_signup/login.html";
+    return;
+  }
 
   // --- Function to search users by username ---
   async function searchUsers(term) {
