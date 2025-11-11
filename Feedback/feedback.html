@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Feedback - Smart Pet Care</title>
-  <!-- <link rel="stylesheet" href="../styles/styles.css"> -->
   <link rel="stylesheet" href="feedback.css">
 </head>
 <body>
-
 
 <!-- Navbar -->
 <div class="navbar">
@@ -18,7 +16,6 @@
   <label for="menu-toggle" class="menu-icon">☰</label>
 
   <div class="nav-links">
-
     <a href="../User_profiles_posting/profile.html">Profile</a>
     <a href="../Searching/search.html">Search</a>
     <a href="../Rebooking/book.html">Book</a>
@@ -27,147 +24,39 @@
   </div>
 </div>
 
-<h1>Smart Pet Care – Feedback Management</h1>
-  <!-- <p>Demo UI to test feedback APIs against Back4App (Parse REST).</p> -->
-
-  <div class="card">
-    <h3>Create Feedback</h3>
-    <div class="grid">
-      <!-- <div>
-        <label>Reviewer ID</label>
-        <input id="reviewerId" placeholder="_User.objectId" />
-      </div>
-      <div> -->
-      
-      <div style="grid-column: 1 / -1; text-align: center;">
-  <label>Role</label>
-  <select id="role">
-    <option value="petParent">I am a Pet Parent reviewing a care taker!</option>
-    <option value="caretaker">I am a Caretaker reviewing a dog!</option>
-  </select>
-</div>
-      
-      
-      
-        <!-- <label>Role</label>
-        <select id="role">
-          <option value="petParent">I am a Pet Parent reviewing a care taker!</option>
-          <option value="caretaker">I am a Caretaker reviewing a dog!</option>
-        </select>
-      </div> -->
-      <div>
-        <label>Caretaker Username (if Pet Parent)</label>
-        <input id="revieweeCaretakerId" placeholder="Caretaker username" />
-      </div>
-      <div>
-        <label>Dog Username (if Caretaker)</label>
-        <input id="revieweeDogId" placeholder="Dog username" />
-      </div>
-      <div>
-        <label>Booking ID (optional)</label>
-        <input id="bookingId" placeholder="Booking.objectId" />
-      </div>
-      <div>
-        <label>Rating (1-5)</label>
-        <input id="rating" type="number" min="1" max="5" step="1" />
-      </div>
-      <div style="grid-column: 1 / -1;">
-        <label>Comment</label>
-        <textarea id="comment" rows="2"></textarea>
-      </div>
-
+<h1>Smart Pet Care</h1>
+<div class="card">
+  <h3>Leave Feedback</h3>
+  <div class="grid">
     <div>
-  <label>Photo (optional)</label>
-  <input id="photo" type="file" accept="image/*" />
+      <label>Who are you reviewing?</label>
+      <input id="targetId" placeholder="Enter the name of the user" />
+    </div>
+    <div>
+      <label>Your Role</label>
+      <select id="role">
+        <option value="caretaker">Caretaker</option>
+        <option value="petParent">Pet Parent</option>
+      </select>
+    </div>
+    <div>
+      <label>Rating (1–5)</label>
+      <input id="rating" type="number" min="1" max="5" step="1" />
+    </div>
+    <div style="grid-column: 1 / -1;">
+      <label>Comment</label>
+      <textarea id="text" rows="3" placeholder="Write your feedback..."></textarea>
+    </div>
+  </div>
+  <button onclick="createFeedback()">Submit Feedback</button>
+  <button onclick="listFeedback()" style="margin-left:10px;">Load Feedback</button>
+  <pre id="createOut"></pre>
+
+  <div id="feedbackList" class="feedback-list"></div>
 </div>
 
-    </div>
-    <button onclick="createFeedback()">Create</button>
-    <pre id="createOut"></pre>
-  </div>
-  
-  <div class="card">
-    <h3>Report Feedback</h3>
-    <div class="grid">
-      <div>
-        <label>Feedback ID</label>
-        <input id="reportId" />
-      </div>
-      <div>
-        <label>Reason</label>
-        <input id="reportReason" />
-      </div>
-    </div>
-    <button onclick="reportFeedback()">Report</button>
-    <pre id="reportOut"></pre>
-  </div>
 
-  <div class="card">
-    <h3>List Caretaker Reviews</h3>
-    <div class="grid">
-      <div>
-        <label>Caretaker ID</label>
-        <input id="caretakerId" />
-      </div>
-    </div>
-    <button onclick="listCaretaker()">List</button>
-    <pre id="caretakerOut"></pre>
-  </div>
-
-  <div class="card">
-    <h3>List Dog Reviews</h3>
-    <div class="grid">
-      <div>
-        <label>Dog ID</label>
-        <input id="dogId" />
-      </div>
-    </div>
-    <button onclick="listDog()">List</button>
-    <pre id="dogOut"></pre>
-  </div>
-
-  <div class="card">
-    <h3>Caretaker Rating Summary</h3>
-    <div class="grid">
-      <div>
-        <label>Caretaker ID</label>
-        <input id="sumCaretakerId" />
-      </div>
-    </div>
-    <button onclick="summaryCaretaker()">Summarize</button>
-    <pre id="summaryOut"></pre>
-  </div>
-
-
-
-
-  <!-- Feedback Form -->
-  <!-- <div class="container">
-    <h1>We Value Your Feedback!</h1>
-    <h2>Tell us what you think about Smart Pet Care 🐾</h2>
-    <hr>
-
-    <form id="feedbackForm" class="feedback-form">
-      <div class="form-group">
-        <input type="text" id="name" placeholder="Your Name" required>
-      </div>
-
-      <div class="form-group">
-        <input type="email" id="email" placeholder="Your Email" required>
-      </div>
-
-      <div class="form-group">
-        <textarea id="message" placeholder="Write your feedback..." rows="5" required></textarea>
-      </div>
-
-      <button type="submit" class="btn teal">Submit Feedback</button>
-    </form>
-
-    <p id="successMsg" class="success-msg" style="display:none;">
-      ✅ Thank you for your feedback! We appreciate your time.
-    </p>
-  </div> -->
-
-  <script src="feedback.js" defer></script>
+<script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+<script src="feedback.js" defer></script>
 </body>
 </html>

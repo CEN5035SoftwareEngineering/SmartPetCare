@@ -1,67 +1,107 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const contacts = document.querySelectorAll(".contact");
+document.addEventListener("DOMContentLoaded", async () => {
+  const contactsList = document.getElementById("contactList");
   const chatName = document.getElementById("chatName");
   const chatPhoto = document.getElementById("chatPhoto");
   const chatMessages = document.getElementById("chatMessages");
   const sendBtn = document.getElementById("sendBtn");
   const messageInput = document.getElementById("messageInput");
 
-  // Sample message data for demo
-  const chats = {
-    alex: [
-      { sender: "them", text: "Hi! What time should I pick up Bella?", time: "7:58 AM" },
-      { sender: "me", text: "8 AM works great!", time: "7:59 AM" }
-    ],
-    maria: [
-      { sender: "them", text: "Hi! How’s Bella doing?", time: "9:10 AM" },
-      { sender: "me", text: "She’s doing great, thank you!", time: "9:12 AM" }
-    ],
-    sarah: [
-      { sender: "them", text: "Got it, thank you!", time: "8:45 AM" }
-    ]
-  };
+  // --- SETUP ---
+  const currentUser = Parse.User.current();
+  if (!currentUser) {
+    alert("You must be logged in to view messages.");
+    window.location.href = "../Login/login.html";
+    return;
+  }
 
-  // Load selected chat
-  contacts.forEach(contact => {
-    contact.addEventListener("click", () => {
-      contacts.forEach(c => c.classList.remove("active"));
-      contact.classList.add("active");
+  let selectedUserId = null;
 
-      const chatId = contact.getAttribute("data-chat");
-      loadChat(chatId);
+  // --- LOAD CONTACTS ---
+  async function loadContacts() {
+    // Example: Query all other users
+    const query = new Parse.Query(Parse.User);
+    query.notEqualTo("objectId", currentUser.id);
+    const users = await query.find();
 
-      chatName.textContent = contact.querySelector("strong").textContent;
-      chatPhoto.src = contact.querySelector("img").src;
+    contactsList.innerHTML = "";
+    users.forEach(user => {
+      const li = document.createElement("li");
+      li.classList.add("contact");
+      li.dataset.id = user.id;
+      li.innerHTML = `
+        <img src="https://via.placeholder.com/50" alt="${user.get('username')}">
+        <div>
+          <strong>${user.get('username')}</strong>
+          <p>Tap to open chat</p>
+        </div>
+      `;
+      li.addEventListener("click", () => openChat(user));
+      contactsList.appendChild(li);
     });
-  });
+  }
 
-  // Load chat messages
-  function loadChat(chatId) {
+  // --- OPEN CHAT WITH SELECTED USER ---
+  async function openChat(user) {
+    selectedUserId = user.id;
+    chatName.textContent = user.get("username");
+    chatPhoto.src = "https://via.placeholder.com/50";
     chatMessages.innerHTML = "";
-    (chats[chatId] || []).forEach(msg => {
+
+    await loadMessages();
+  }
+
+  // --- LOAD MESSAGES ---
+  async function loadMessages() {
+    if (!selectedUserId) return;
+
+    const Message = Parse.Object.extend("Message");
+    const query1 = new Parse.Query(Message);
+    query1.equalTo("sender", currentUser);
+    query1.equalTo("receiverId", selectedUserId);
+
+    const query2 = new Parse.Query(Message);
+    query2.equalTo("receiver", currentUser);
+    query2.equalTo("senderId", selectedUserId);
+
+    const mainQuery = Parse.Query.or(query1, query2);
+    mainQuery.ascending("createdAt");
+
+    const messages = await mainQuery.find();
+
+    chatMessages.innerHTML = "";
+    messages.forEach(msg => {
+      const text = msg.get("text");
+      const sender = msg.get("senderId") === currentUser.id ? "me" : "them";
       const msgDiv = document.createElement("div");
-      msgDiv.classList.add("message", msg.sender === "me" ? "sent" : "received");
-      msgDiv.innerHTML = `<p>${msg.text}</p><span>${msg.time}</span>`;
+      msgDiv.classList.add("message", sender === "me" ? "sent" : "received");
+      msgDiv.innerHTML = `<p>${text}</p><span>${new Date(msg.createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
       chatMessages.appendChild(msgDiv);
     });
+
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  // Default to first chat
-  loadChat("alex");
-
-  // Send message
-  sendBtn.addEventListener("click", () => {
+  // --- SEND MESSAGE ---
+  sendBtn.addEventListener("click", async () => {
     const text = messageInput.value.trim();
-    if (!text) return;
+    if (!text || !selectedUserId) return;
 
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const msgDiv = document.createElement("div");
-    msgDiv.classList.add("message", "sent");
-    msgDiv.innerHTML = `<p>${text}</p><span>${time}</span>`;
-    chatMessages.appendChild(msgDiv);
+    const Message = Parse.Object.extend("Message");
+    const message = new Message();
+    message.set("text", text);
+    message.set("sender", currentUser);
+    message.set("receiverId", selectedUserId);
+    message.set("senderId", currentUser.id);
 
-    messageInput.value = "";
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    try {
+      await message.save();
+      messageInput.value = "";
+      await loadMessages();
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   });
+
+  // Load contact list
+  await loadContacts();
 });
