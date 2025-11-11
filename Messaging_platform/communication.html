@@ -27,45 +27,43 @@
   </div>
 </div>
 
-  <main class="chat-container">
-  <!-- Sidebar: List of chats -->
-  <aside class="chat-list">
-    <h2>Chats</h2>
-    <input type="text" id="searchChat" placeholder="Search..." />
-    <ul id="contactList">
-      <!-- Chat list populated dynamically -->
-    </ul>
-  </aside>
+ <main class="chat-container">
 
-  <!-- Chat area -->
-  <section class="chat-box">
-    <div class="chat-header">
-      <img id="chatPhoto" src="https://via.placeholder.com/50" alt="User">
-      <div>
-        <h3 id="chatName">Select a Chat</h3>
-        <p class="status" id="chatStatus">Offline</p>
+    <!-- Sidebar: Search + Contacts -->
+    <aside class="chat-list">
+      <h2>Search Users</h2>
+      <input type="text" id="userSearchInput" placeholder="Search username..." />
+      <button id="searchUserBtn" class="btn">Search</button>
+      <ul id="searchResults"></ul>
+
+      <hr />
+      <h2>Contacts</h2>
+      <ul id="contactList"></ul>
+    </aside>
+
+    <!-- Chat area -->
+    <section class="chat-box">
+      <div class="chat-header">
+        <img id="chatPhoto" src="img/placeholder.png" alt="User" />
+        <div>
+          <h3 id="chatName">Select a Chat</h3>
+          <p class="status" id="chatStatus">Offline</p>
+        </div>
       </div>
-    </div>
 
-    <div class="messages" id="chatMessages"></div>
+      <div class="messages" id="chatMessages"></div>
 
-    <div class="chat-input">
-      <input type="text" id="messageInput" placeholder="Type a message..." />
-      <button id="sendBtn" class="btn teal">Send</button>
-    </div>
-  </section>
-</main>
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Type a message..." />
+        <button id="sendBtn" class="btn teal">Send</button>
+      </div>
+    </section>
 
-<!-- Back4App Setup -->
-<script src="https://unpkg.com/parse/dist/parse.min.js"></script>
-<script>
-  // Initialize Back4App connection
-  Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
-  Parse.serverURL = "https://parseapi.back4app.com/";
-</script>
+  </main>
 
-<script src="communication.js"></script>
 
+  <!-- Back4App Setup -->
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
   <script src="communication.js"></script>
 </body>
 </html>

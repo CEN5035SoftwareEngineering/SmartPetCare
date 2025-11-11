@@ -1,12 +1,20 @@
+// Initialize Parse
+Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
+Parse.serverURL = "https://parseapi.back4app.com/";
+
 document.addEventListener("DOMContentLoaded", async () => {
+  // --- DOM Elements ---
+  const searchInput = document.getElementById("userSearchInput");
+  const searchBtn = document.getElementById("searchUserBtn");
+  const searchResults = document.getElementById("searchResults");
   const contactsList = document.getElementById("contactList");
   const chatName = document.getElementById("chatName");
   const chatPhoto = document.getElementById("chatPhoto");
   const chatMessages = document.getElementById("chatMessages");
-  const sendBtn = document.getElementById("sendBtn");
   const messageInput = document.getElementById("messageInput");
+  const sendBtn = document.getElementById("sendBtn");
 
-  // --- SETUP ---
+  // --- Current user ---
   const currentUser = Parse.User.current();
   if (!currentUser) {
     alert("You must be logged in to view messages.");
@@ -14,11 +22,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  let selectedUserId = null;
+  let selectedUser = null;
 
-  // --- LOAD CONTACTS ---
+  // ----------------------------
+  // Search existing users
+  // ----------------------------
+  searchBtn.addEventListener("click", async () => {
+    const term = searchInput.value.trim();
+    if (!term) return;
+
+    const query = new Parse.Query(Parse.User);
+    query.notEqualTo("objectId", currentUser.id);
+    query.matches("username", term, "i"); // case-insensitive
+
+    try {
+      const users = await query.find();
+      searchResults.innerHTML = "";
+
+      if (users.length === 0) {
+        searchResults.innerHTML = "<li>No users found.</li>";
+        return;
+      }
+
+      users.forEach(user => {
+        const li = document.createElement("li");
+        li.textContent = user.get("username");
+        li.addEventListener("click", () => openChat(user));
+        searchResults.appendChild(li);
+      });
+
+    } catch (err) {
+      console.error("Search error:", err);
+      searchResults.innerHTML = `<li style="color:red;">${err.message}</li>`;
+    }
+  });
+
+  // ----------------------------
+  // Load contacts (all users except self)
+  // ----------------------------
   async function loadContacts() {
-    // Example: Query all other users
     const query = new Parse.Query(Parse.User);
     query.notEqualTo("objectId", currentUser.id);
     const users = await query.find();
@@ -28,80 +70,85 @@ document.addEventListener("DOMContentLoaded", async () => {
       const li = document.createElement("li");
       li.classList.add("contact");
       li.dataset.id = user.id;
-      li.innerHTML = `
-        <img src="https://via.placeholder.com/50" alt="${user.get('username')}">
-        <div>
-          <strong>${user.get('username')}</strong>
-          <p>Tap to open chat</p>
-        </div>
-      `;
+      li.innerHTML = `<strong>${user.get("username")}</strong>`;
       li.addEventListener("click", () => openChat(user));
       contactsList.appendChild(li);
     });
   }
 
-  // --- OPEN CHAT WITH SELECTED USER ---
+  // ----------------------------
+  // Open chat with user
+  // ----------------------------
   async function openChat(user) {
-    selectedUserId = user.id;
+    selectedUser = user;
     chatName.textContent = user.get("username");
-    chatPhoto.src = "https://via.placeholder.com/50";
+    chatPhoto.src = "img/placeholder.png"; // can replace with user photo if available
     chatMessages.innerHTML = "";
-
     await loadMessages();
   }
 
-  // --- LOAD MESSAGES ---
+  // ----------------------------
+  // Load messages between currentUser and selectedUser
+  // ----------------------------
   async function loadMessages() {
-    if (!selectedUserId) return;
+    if (!selectedUser) return;
 
     const Message = Parse.Object.extend("Message");
-    const query1 = new Parse.Query(Message);
-    query1.equalTo("sender", currentUser);
-    query1.equalTo("receiverId", selectedUserId);
 
-    const query2 = new Parse.Query(Message);
-    query2.equalTo("receiver", currentUser);
-    query2.equalTo("senderId", selectedUserId);
+    const sentQuery = new Parse.Query(Message);
+    sentQuery.equalTo("sender", currentUser);
+    sentQuery.equalTo("receiver", selectedUser);
 
-    const mainQuery = Parse.Query.or(query1, query2);
+    const receivedQuery = new Parse.Query(Message);
+    receivedQuery.equalTo("sender", selectedUser);
+    receivedQuery.equalTo("receiver", currentUser);
+
+    const mainQuery = Parse.Query.or(sentQuery, receivedQuery);
     mainQuery.ascending("createdAt");
+    mainQuery.include("sender");
+    mainQuery.include("receiver");
 
     const messages = await mainQuery.find();
 
     chatMessages.innerHTML = "";
     messages.forEach(msg => {
-      const text = msg.get("text");
-      const sender = msg.get("senderId") === currentUser.id ? "me" : "them";
+      const senderId = msg.get("sender").id;
       const msgDiv = document.createElement("div");
-      msgDiv.classList.add("message", sender === "me" ? "sent" : "received");
-      msgDiv.innerHTML = `<p>${text}</p><span>${new Date(msg.createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
+      msgDiv.classList.add("message", senderId === currentUser.id ? "sent" : "received");
+      msgDiv.innerHTML = `
+        <p>${msg.get("text")}</p>
+        <span>${new Date(msg.createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+      `;
       chatMessages.appendChild(msgDiv);
     });
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  // --- SEND MESSAGE ---
+  // ----------------------------
+  // Send message
+  // ----------------------------
   sendBtn.addEventListener("click", async () => {
     const text = messageInput.value.trim();
-    if (!text || !selectedUserId) return;
+    if (!text || !selectedUser) return;
 
     const Message = Parse.Object.extend("Message");
     const message = new Message();
     message.set("text", text);
-    message.set("sender", currentUser);
-    message.set("receiverId", selectedUserId);
-    message.set("senderId", currentUser.id);
+    message.set("sender", currentUser);      // pointer to logged-in user
+    message.set("receiver", selectedUser);   // pointer to existing user
 
     try {
       await message.save();
       messageInput.value = "";
       await loadMessages();
-    } catch (error) {
-      console.error("Error sending message:", error);
+    } catch (err) {
+      console.error("Send message error:", err);
     }
   });
 
-  // Load contact list
+  // ----------------------------
+  // Initial load of contacts
+  // ----------------------------
   await loadContacts();
 });

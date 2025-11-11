@@ -10,7 +10,7 @@ body {
   background-color: var(--light-gray);
   margin: 0;
   padding: 0;
-  color: var(--black);
+  color: var(--teal);
 }
 
 .navbar {
@@ -57,7 +57,7 @@ body {
 }
 
 .nav-links a:hover {
-  background-color: var(--teal);
+  background-color: var(--olive);
 }
 
 /* Responsive Navbar */
@@ -67,7 +67,7 @@ body {
   .nav-links {
     display: none;
     flex-direction: column;
-    background-color: var(--black);
+    background-color: var(--teal);
     width: 100%;
     position: absolute;
     top: 60px;
@@ -87,7 +87,7 @@ body {
   margin: 40px auto;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px var(--teal);
   overflow: hidden;
 }
 
@@ -101,7 +101,7 @@ body {
 
 .chat-list h2 {
   margin: 15px;
-  color: var(--black);
+  color: var(--teal);
 }
 
 .chat-list input {
@@ -222,7 +222,7 @@ body {
 
 .message.received {
   background-color: #e0e0e0;
-  color: var(--black);
+  color: var(--teal);
   align-self: flex-start;
 }
 
