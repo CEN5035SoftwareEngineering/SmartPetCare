@@ -1,70 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Pet Care</title>
-  <link rel="icon" type="image/x-icon" href="../styles/favicon.png">
-  <link rel="stylesheet" href="messagestyles.css">
-  <!-- <link rel="stylesheet" href="../styles/styles.css"> -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Pet Care</title>
+<link rel="icon" type="image/x-icon" href="../styles/favicon.png">
+<link rel="stylesheet" href="messagestyles.css">
+<!-- <link rel="stylesheet" href="../styles/styles.css"> -->
 </head>
 <body>
 
 <!-- Navbar -->
 <div class="navbar">
-  <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
+<div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
-  <input type="checkbox" id="menu-toggle" class="menu-toggle">
-  <label for="menu-toggle" class="menu-icon">☰</label>
+<input type="checkbox" id="menu-toggle" class="menu-toggle">
+<label for="menu-toggle" class="menu-icon">☰</label>
 
-  <div class="nav-links">
+<div class="nav-links">
 
-    <a href="../User_profiles_posting/profile.html">Profile</a>
-    <a href="../Searching/search.html">Search</a>
-    <a href="../Rebooking/book.html">Book</a>
-    <a href="../Feedback/feedback.html">Feedback</a>
-    <a href="communication.html">Messaging</a>
-  </div>
+<a href="../User_profiles_posting/profile.html">Profile</a>
+<a href="../Searching/search.html">Search</a>
+<a href="../Rebooking/book.html">Book</a>
+<a href="../Feedback/feedback.html">Feedback</a>
+<a href="communication.html">Messaging</a>
+</div>
 </div>
 
- <main class="chat-container">
+<main class="chat-container">
 
-    <!-- Sidebar: Search + Contacts -->
-    <aside class="chat-list">
-      <h2>Search Users</h2>
-      <input type="text" id="userSearchInput" placeholder="Search username..." />
-      <button id="searchUserBtn" class="btn">Search</button>
-      <ul id="searchResults"></ul>
+<!-- Sidebar: Search + Contacts -->
+<aside class="chat-list">
+<h2>Search Users</h2>
+<input type="text" id="userSearchInput" placeholder="Search username..." />
+<button id="searchUserBtn" class="btn">Search</button>
+<ul id="searchResults"></ul>
 
-      <hr />
-      <h2>Contacts</h2>
-      <ul id="contactList"></ul>
-    </aside>
+<hr />
+<h2>Contacts</h2>
+<ul id="contactList"></ul>
+</aside>
 
-    <!-- Chat area -->
-    <section class="chat-box">
-      <div class="chat-header">
-        <img id="chatPhoto" src="img/placeholder.png" alt="User" />
-        <div>
-          <h3 id="chatName">Select a Chat</h3>
-          <p class="status" id="chatStatus">Offline</p>
-        </div>
-      </div>
+<!-- Chat area -->
+<section class="chat-box">
+<div class="chat-header">
+<img id="chatPhoto" src="img/placeholder.png" alt="User" />
+<div>
+<h3 id="chatName">Select a Chat</h3>
+<p class="status" id="chatStatus">Offline</p>
+</div>
+</div>
 
-      <div class="messages" id="chatMessages"></div>
+<div class="messages" id="chatMessages"></div>
 
-      <div class="chat-input">
-        <input type="text" id="messageInput" placeholder="Type a message..." />
-        <button id="sendBtn" class="btn teal">Send</button>
-      </div>
-    </section>
+<div class="chat-input">
+<input type="text" id="messageInput" placeholder="Type a message..." />
+<button id="sendBtn" class="btn teal">Send</button>
+</div>
+</section>
 
-  </main>
+</main>
 
 
   <!-- Back4App Setup -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
-  <!-- <script src="https://unpkg.com/parse/dist/parse.min.js"></script> -->
+  <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
   <script src="communication.js"></script>
 </body>
 </html>
