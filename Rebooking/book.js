@@ -26,7 +26,7 @@ let selectedDate = null;
 let selectedTime = null;
 
 // Example caretaker (replace with actual selected caretaker ID)
-const caretakerId = "PUT_CARETAKER_OBJECT_ID_HERE"; // TODO: set dynamically
+const caretakerId = "PUT_CARETAKER_OBJECT_ID_HERE"; // TODO: set dynamically Not sure what this is or why it exists
 
 function formatDay(d) {
   return d.toLocaleDateString(undefined, { weekday: "short" });
