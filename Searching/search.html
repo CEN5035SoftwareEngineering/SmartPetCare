@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,42 +8,40 @@
   <link rel="icon" type="image/x-icon" href="../styles/favicon.png">
   <link rel="stylesheet" href="searchstyles.css">
 </head>
+
 <body>
 
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
-<!-- Navbar -->
-<div class="navbar">
-  <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
+    <input type="checkbox" id="menu-toggle" class="menu-toggle">
+    <label for="menu-toggle" class="menu-icon">☰</label>
 
-  <input type="checkbox" id="menu-toggle" class="menu-toggle">
-  <label for="menu-toggle" class="menu-icon">☰</label>
-
-  <div class="nav-links">
-    <a href="../User_profiles_posting/profile.html">Profile</a>
-    <a href="search.html">Search</a>
-    <a href="../Rebooking/book.html">Book</a>
-    <a href="../Feedback/feedback.html">Feedback</a>
-    <a href="../Messaging_platform/communication.html">Messaging</a>
+    <div class="nav-links">
+      <a href="../User_profiles_posting/profile.html">Profile</a>
+      <a href="search.html">Search</a>
+      <a href="../Rebooking/book.html">Book</a>
+      <a href="../Feedback/feedback.html">Feedback</a>
+      <a href="../Messaging_platform/communication.html">Messaging</a>
+    </div>
   </div>
-</div>
 
-<main class="container">
-  <h1>Search for a User</h1>
-  <input type="text" id="zipcode" placeholder="Enter the ZIP code of the user" />
-  <button onClick="searchByZip()">Search</button>
+  <main class="container">
+    <h1>Search for a User</h1>
+    <input type="text" id="zipcode" placeholder="Enter the ZIP code of the user" />
+    <button id="searchBtn">Search</button>
 
-  <ul id="results"></ul>
-</main>
+    <div id="results"></div>
+  </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
-
-<script>
-    // Initialize Parse
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
+  <script>
     Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
     Parse.serverURL = 'https://parseapi.back4app.com/';
   </script>
 
   <script src="search.js"></script>
-  <!-- <script src="back4app-init.js"></script> -->
 </body>
+
 </html>

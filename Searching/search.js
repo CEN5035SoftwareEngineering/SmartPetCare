@@ -1,194 +1,173 @@
 // search.js
-//Debugging code:
 
-// console.log("Parse initialized?", typeof Parse !== "undefined");
-// console.log("Current user:", Parse.User.current());
-// Restore the session manually
-// const token = sessionStorage.getItem("sessionToken");
-// if (token) {
-//   const user = await Parse.User.become(token);
-//   console.log("Authenticated via Back4App session:", user.getUsername());
-// } else {
-//   console.warn("No token found, redirecting to login");
-// }
-// Code to check if the user is currently logged in
-// document.addEventListener("DOMContentLoaded", async () => {
+// // Initialize Parse (do this only once per page!)
+// Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
+// Parse.serverURL = "https://parseapi.back4app.com/";
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   // DOM elements
+//   const searchInput = document.getElementById("zipcode");
+//   const searchBtn = document.getElementById("searchBtn");
+//   const resultsDiv = document.getElementById("results");
+
+//   // Check login status
 //   const currentUser = Parse.User.current();
-//   if (currentUser) {
-//     console.log("✅ Logged in as:", currentUser.getUsername(), "(", currentUser.id, ")");
-//   } else {
-//     console.log("⚠️ No user is currently logged in.");
+//   if (!currentUser) {
+//     alert("You must be logged in to use this page.");
+//     window.location.href = "../User_login_signup/login.html";
+//     return;
 //   }
-// });
-async function searchByZip() {
-  const zip = document.getElementById("zipcode").value.trim();
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = "";
 
-  if (!zip) {
-    resultsDiv.innerHTML = "<p>Please enter a ZIP code.</p>";
+//   // Main search function - by Zip Code
+//   async function searchByZip() {
+//     const zip = searchInput.value.trim();
+//     resultsDiv.innerHTML = "";
+
+//     if (!zip || !/^\d{5}$/.test(zip)) {
+//       resultsDiv.innerHTML = "<p>Please enter a valid 5-digit ZIP code.</p>";
+//       return;
+//     }
+
+//     try {
+//       const results = await Parse.Cloud.run("searchByZip", { zip });
+
+//       if (!results || results.length === 0) {
+//         resultsDiv.innerHTML = "<p>No users found for that ZIP code.</p>";
+//         return;
+//       }
+
+//       // Build and display each result card
+//       results.forEach(profile => {
+//         const user = profile.get("user");
+//         const username = user?.get("username") || "Unknown";
+
+//         const type = profile.className; // PetParent or Caretaker
+//         const name = profile.get("name") || "No name";
+//         const zipCode = profile.get("zip") || "N/A";
+//         const profileId = profile.id;
+//         const profileLink = `../User_profiles_posting/profile.html?id=${profileId}`;
+
+//         const card = document.createElement("div");
+//         card.classList.add("user-card");
+
+//         // Common info for both roles
+//         let html = `
+//           <a href="${profileLink}" target="_blank">
+//             <strong>${username}</strong>
+//           </a><br>
+//           Name: ${name}<br>
+//           Type: ${type}<br>
+//           ZIP: ${zipCode}<br>
+//         `;
+
+//         // Caretaker-only fields
+//         if (type === "Caretaker") {
+//           const rate = profile.get("rate");
+//           const experience = profile.get("experience") || "Not listed";
+
+//           html += `
+//             Rate: $${rate !== undefined ? Number(rate).toFixed(2) : "N/A"} / hr<br>
+//             Experience: ${experience}<br>
+//           `;
+//         }
+
+//         card.innerHTML = html;
+//         resultsDiv.appendChild(card);
+//       });
+
+//     } catch (err) {
+//       console.error("Search error:", err);
+//       resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+//     }
+//   }
+
+//   // Button click triggers search
+//   searchBtn.addEventListener("click", searchByZip);
+
+//   // Pressing Enter also triggers search
+//   searchInput.addEventListener("keyup", (e) => {
+//     if (e.key === "Enter") {
+//       searchByZip();
+//     }
+//   });
+// });
+
+// Initialize Parse
+Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
+Parse.serverURL = "https://parseapi.back4app.com/";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("zipcode");
+  const searchBtn = document.getElementById("searchBtn");
+  const resultsDiv = document.getElementById("results");
+
+  const currentUser = Parse.User.current();
+  if (!currentUser) {
+    alert("You must be logged in to use this page.");
+    window.location.href = "../User_login_signup/login.html";
     return;
   }
 
-  try {
-    const results = await Parse.Cloud.run("searchByZip", { zip });
+  async function searchByZip() {
+    const zip = searchInput.value.trim();
+    resultsDiv.innerHTML = "";
 
-    resultsDiv.innerHTML = results.map(obj => {
-      const user = obj.get("user");
-      const type = obj.className;
-      const username = user ? user.get("username") : "Unknown";
-      const email = user ? user.get("email") : "No email";
-      return `<div class="user-card">
-        <strong>${username}</strong><br>
-        ${email}<br>
-        Type: ${type}<br>
-        ZIP: ${zip}
-      </div>`;
-    }).join("");
-  } catch (err) {
-    resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
-    console.error(err);
+    if (!zip || !/^\d{5}$/.test(zip)) {
+      resultsDiv.innerHTML = "<p>Please enter a valid 5-digit ZIP code.</p>";
+      return;
+    }
+
+    try {
+      const results = await Parse.Cloud.run("searchByZip", { zip });
+
+      if (!results || results.length === 0) {
+        resultsDiv.innerHTML = "<p>No users found for that ZIP code.</p>";
+        return;
+      }
+
+      results.forEach(profile => {
+        const user = profile.get("user");
+        const username = user?.get("username") || "Unknown";
+        const type = profile.className;
+        const name = profile.get("name") || "";
+        const zipCode = profile.get("zip") || "";
+        const profileId = profile.id;
+        const profileLink = `../User_profiles_posting/profile.html?id=${profileId}`;
+
+        const card = document.createElement("div");
+        card.classList.add("user-card");
+
+        let html = `
+          <a href="${profileLink}" target="_blank"><strong>${username}</strong></a><br>
+          ${name}<br>
+          ${type}<br>
+          ${zipCode}<br>
+        `;
+
+        if (type === "Caretaker") {
+          const rate = profile.get("rate");
+          const experience = profile.get("experience") || "Not listed";
+
+          html += `
+            $${rate !== undefined ? Number(rate).toFixed(2) : "N/A"} / hr<br>
+            Experience: ${experience}<br>
+          `;
+        }
+
+        card.innerHTML = html;
+        resultsDiv.appendChild(card);
+      });
+
+    } catch (err) {
+      console.error("Search error:", err);
+      resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    }
   }
-}
 
-// // --- Search function ---
-// async function searchByZip() {
-//   const zip = document.getElementById("zipcode").value.trim();
-//   const resultsDiv = document.getElementById("results");
-//   resultsDiv.innerHTML = "";
-
-//   if (!zip) {
-//     resultsDiv.innerHTML = "<p>Please enter a ZIP code.</p>";
-//     return;
-//   }
-
-//   try {
-//     // Query PetParent
-//     const Parent = Parse.Object.extend("PetParent");
-//     const parentQuery = new Parse.Query(Parent);
-//     parentQuery.equalTo("zip", zip);
-//     parentQuery.include("user"); // include user pointer
-//     parentQuery.limit(100); // optional: limit results for performance
-
-//     // Query Caretaker
-//     const Caretaker = Parse.Object.extend("Caretaker");
-//     const caretakerQuery = new Parse.Query(Caretaker);
-//     caretakerQuery.equalTo("zip", zip);
-//     caretakerQuery.include("user");
-//     caretakerQuery.limit(100);
-
-//     // Run both queries WITHOUT session token (public)
-//     const [parents, caretakers] = await Promise.all([
-//       parentQuery.find({ useMasterKey: false }), // ACLs enforced
-//       caretakerQuery.find({ useMasterKey: false })
-//     ]);
-
-//     // Combine and display
-//     const allResults = [...parents, ...caretakers];
-//     if (allResults.length === 0) {
-//       resultsDiv.innerHTML = "<p>No users found for that ZIP code.</p>";
-//       return;
-//     }
-
-//     allResults.forEach(obj => {
-//       const userObj = obj.get("user");
-//       const type = obj.className;
-//       const username = userObj ? userObj.get("username") : "Unknown";
-//       const email = userObj ? userObj.get("email") : "No email";
-
-//       const card = document.createElement("div");
-//       card.classList.add("user-card");
-//       card.innerHTML = `<strong>${username}</strong><br>${email}<br>Type: ${type}<br>ZIP: ${zip}`;
-//       resultsDiv.appendChild(card);
-//     });
-
-//   } catch (error) {
-//     console.error("Error searching users:", error);
-//     resultsDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
-//   }
-// }
-
-
-// let currentUser = null; // global
-
-// // CORRECT WAY TO CONNECT USING THE SESSION TOKEN
-// (async () => {
-//   const token = sessionStorage.getItem("sessionToken");
-//   if (!token) {
-//     console.warn("No token found — redirecting to login.");
-//     window.location.href = "../User_login_signup/login.html";
-//     return;
-//   }
-
-//   try {
-//     currentUser = await Parse.User.become(token); // store globally
-//     console.log("✅ Authenticated as:", currentUser.getUsername());
-//   } catch (err) {
-//     console.error("❌ Invalid token:", err.message);
-//     sessionStorage.removeItem("sessionToken");
-//     window.location.href = "../User_login_signup/login.html";
-//   }
-// })();
-// console.log(Parse.User.current().getSessionToken());
-
-// // --- Search function ---
-// async function searchByZip() {
-//   if (!currentUser) {  // use the global variable
-//     console.warn("User not authenticated yet. Please wait...");
-//     return;
-//   }
-
-//   const zip = document.getElementById("zipcode").value.trim();
-//   const resultsDiv = document.getElementById("results");
-//   resultsDiv.innerHTML = "";
-
-//   if (!zip) {
-//     resultsDiv.innerHTML = "<p>Please enter a ZIP code.</p>";
-//     return;
-//   }
-
-//   try {
-//     // Query PetParent
-//     const Parent = Parse.Object.extend("PetParent");
-//     const parentQuery = new Parse.Query(Parent);
-//     parentQuery.equalTo("zip", zip);
-//     parentQuery.include("user"); //user pointer
-
-//     // Query Caretaker
-//     const Caretaker = Parse.Object.extend("Caretaker");
-//     const caretakerQuery = new Parse.Query(Caretaker);
-//     caretakerQuery.equalTo("zip", zip);
-//     caretakerQuery.include("user"); //points to the user
-
-//     // Run both queries
-//     const [parents, caretakers] = await Promise.all([
-//       parentQuery.find(),
-//       caretakerQuery.find()
-//     ]);
-
-//     // Combine and display
-//     const allResults = [...parents, ...caretakers];
-//     if (allResults.length === 0) {
-//       resultsDiv.innerHTML = "<p>No users found for that ZIP code.</p>";
-//       return;
-//     }
-
-//     allResults.forEach(obj => {
-//       const userObj = obj.get("user");
-//       const type = obj.className;
-//       const username = userObj ? userObj.get("username") : "Unknown";
-//       const email = userObj ? userObj.get("email") : "No email";
-
-//       const card = document.createElement("div");
-//       card.classList.add("user-card");
-//       card.innerHTML = `<strong>${username}</strong><br>${email}<br>Type: ${type}<br>ZIP: ${zip}`;
-//       resultsDiv.appendChild(card);
-//     });
-
-//   } catch (error) {
-//     console.error("Error searching users:", error);
-//     resultsDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
-//   }
-// }
-
-
+  searchBtn.addEventListener("click", searchByZip);
+  searchInput.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") {
+      searchByZip();
+    }
+  });
+});
