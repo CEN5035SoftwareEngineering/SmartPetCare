@@ -141,7 +141,16 @@ checkReady();
 
 bookBtn.addEventListener("click", async () => {
   if (bookBtn.disabled) return;
+  const {token, error} = await stripe.createToken(card);
 
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  // Now token.id can be sent to your server to actually charge the card
+  console.log("Stripe token:", token.id);
+  
   const currentUser = Parse.User.current();
   if (!currentUser) {
     alert("Please log in before booking.");
@@ -171,3 +180,39 @@ bookBtn.addEventListener("click", async () => {
     alert("❌ Failed to save booking: " + err.message);
   }
 });
+
+// --- Stripe Payment Setup ---
+const stripe = Stripe("pk_test_YourPublicKeyHere"); // replace with your Stripe public key
+const elements = stripe.elements();
+
+// Create the card element
+const card = elements.create("card", {
+  style: {
+    base: {
+      fontSize: '16px',
+      color: '#32325d',
+      '::placeholder': { color: '#a0aec0' }
+    }
+  }
+});
+card.mount('#card-element');
+
+// Show real-time validation errors
+card.on('change', (event) => {
+  const displayError = document.getElementById('card-errors');
+  displayError.textContent = event.error ? event.error.message : '';
+});
+
+// Modify checkReady() to also check if card is ready
+function checkReady() {
+  const ok = selectedDate && selectedTime && agree.checked;
+  bookBtn.disabled = !ok;
+
+  if (!selectedDate || !selectedTime) {
+    status.textContent = "Select a date and time.";
+  } else if (!agree.checked) {
+    status.textContent = "Agree to terms to continue.";
+  } else {
+    status.textContent = "";
+  }
+}
