@@ -83,8 +83,8 @@ async function searchByZip() {
 
     // Run both queries
     const [parents, caretakers] = await Promise.all([
-      parentQuery.find({useMasterKey: false}), //ACL enforced
-      caretakerQuery.find({useMasterKey: false}) //ACL enforced
+      parentQuery.find(),
+      caretakerQuery.find()
     ]);
 
     // Combine and display
@@ -95,7 +95,7 @@ async function searchByZip() {
     }
 
     allResults.forEach(obj => {
-      const userObj = obj.get("userPointer");
+      const userObj = obj.get("user");
       const type = obj.className;
       const username = userObj ? userObj.get("username") : "Unknown";
       const email = userObj ? userObj.get("email") : "No email";
