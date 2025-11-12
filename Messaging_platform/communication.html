@@ -6,30 +6,50 @@
 <title>Smart Pet Care</title>
 <link rel="icon" type="image/x-icon" href="../styles/favicon.png">
 <link rel="stylesheet" href="messagestyles.css">
-<!-- <link rel="stylesheet" href="../styles/styles.css"> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
 </head>
 <body>
 
 <!-- Navbar -->
 <div class="navbar">
-<div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
+  <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
-<input type="checkbox" id="menu-toggle" class="menu-toggle">
-<label for="menu-toggle" class="menu-icon">☰</label>
+  <input type="checkbox" id="menu-toggle" class="menu-toggle">
+  <label for="menu-toggle" class="menu-icon">☰</label>
 
-<div class="nav-links">
+  <div class="nav-links">
 
-<a href="../User_profiles_posting/profile.html">Profile</a>
-<a href="../Searching/search.html">Search</a>
-<a href="../Rebooking/book.html">Book</a>
-<a href="../Feedback/feedback.html">Feedback</a>
-<a href="communication.html">Messaging</a>
+    <a href="../User_profiles_posting/profile.html">Profile</a>
+    <a href="../Searching/search.html">Search</a>
+    <a href="../Rebooking/book.html">Book</a>
+    <a href="../Feedback/feedback.html">Feedback</a>
+    <a href="communication.html">Messaging</a>
+  </div>
 </div>
-</div>
+  <div class="container">
+    <h2>Messages</h2>
 
-<main class="chat-container">
+    <!-- 🔍 Search Users -->
+    <div id="searchSection">
+      <input type="text" id="searchInput" placeholder="Search users..." />
+      <button id="searchBtn">Search</button>
+    </div>
+    <ul id="searchResults"></ul>
 
-<!-- Sidebar: Search + Contacts -->
+    <!-- 💬 Chat Area -->
+    <div id="chatBox">
+      <p>Select a user to start chatting.</p>
+    </div>
+
+    <!-- ✏️ Send Message -->
+    <div id="messageSection">
+      <input type="hidden" id="receiverId" />
+      <input type="text" id="messageInput" placeholder="Type your message..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+<!-- <main class="chat-container">
+
 <aside class="chat-list">
 <h2>Search Users</h2>
 <input type="text" id="userSearchInput" placeholder="Search username..." />
@@ -41,7 +61,6 @@
 <ul id="contactList"></ul>
 </aside>
 
-<!-- Chat area -->
 <section class="chat-box">
 <div class="chat-header">
 <img id="chatPhoto" src="img/placeholder.png" alt="User" />
@@ -59,7 +78,7 @@
 </div>
 </section>
 
-</main>
+</main> -->
  
 
   <!-- Back4App Setup -->
