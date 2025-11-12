@@ -26,64 +26,40 @@
     <a href="communication.html">Messaging</a>
   </div>
 </div>
+  <!-- Main Container -->
   <div class="container">
     <h2>Messages</h2>
 
-    <!-- 🔍 Search Users -->
-    <div id="searchSection">
-      <input type="text" id="searchInput" placeholder="Search users..." />
-      <button id="searchBtn">Search</button>
-    </div>
-    <ul id="searchResults"></ul>
+    <!-- Left Section: Contacts + Search -->
+    <div class="sidebar">
+      <div class="search-section">
+        <input type="text" id="searchInput" placeholder="🔍 Search users..." />
+        <button id="searchBtn">Search</button>
+        <ul id="searchResults"></ul>
+      </div>
 
-    <!-- 💬 Chat Area -->
-    <div id="chatBox">
-      <p>Select a user to start chatting.</p>
+      <h3>Your Contacts</h3>
+      <ul id="contactList" class="contact-list"></ul>
     </div>
 
-    <!-- ✏️ Send Message -->
-    <div id="messageSection">
-      <input type="hidden" id="receiverId" />
-      <input type="text" id="messageInput" placeholder="Type your message..." />
-      <button id="sendBtn">Send</button>
+    <!-- Right Section: Chat Area -->
+    <div class="chat-section">
+      <div id="chatHeader" class="chat-header">Select a user to chat</div>
+
+      <div id="chatBox" class="chat-box"></div>
+
+      <div class="chat-input">
+        <input type="hidden" id="receiverId" />
+        <input type="text" id="messageInput" placeholder="Type your message..." />
+        <button id="sendBtn">Send</button>
+      </div>
     </div>
   </div>
-<!-- <main class="chat-container">
 
-<aside class="chat-list">
-<h2>Search Users</h2>
-<input type="text" id="userSearchInput" placeholder="Search username..." />
-<button id="searchUserBtn" class="btn">Search</button>
-<ul id="searchResults"></ul>
-
-<hr />
-<h2>Contacts</h2>
-<ul id="contactList"></ul>
-</aside>
-
-<section class="chat-box">
-<div class="chat-header">
-<img id="chatPhoto" src="img/placeholder.png" alt="User" />
-<div>
-<h3 id="chatName">Select a Chat</h3>
-<p class="status" id="chatStatus">Offline</p>
-</div>
-</div>
-
-<div class="messages" id="chatMessages"></div>
-
-<div class="chat-input">
-<input type="text" id="messageInput" placeholder="Type a message..." />
-<button id="sendBtn" class="btn teal">Send</button>
-</div>
-</section>
-
-</main> -->
  
 
   <!-- Back4App Setup -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
-  <!-- <script src="https://unpkg.com/parse/dist/parse.min.js"></script> -->
   <script src="communication.js"></script>
 </body>
 </html>
