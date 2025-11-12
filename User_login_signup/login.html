@@ -8,24 +8,55 @@
     <link rel="stylesheet" href="userstyles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
     <script>
-        // Initialize Parse
-        Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
-        Parse.serverURL = 'https://parseapi.back4app.com/';
+  // Initialize Parse
+  Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
+  Parse.serverURL = 'https://parseapi.back4app.com/';
 
-        async function loginUser(event) {
-            event.preventDefault();
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+  // 🔍 On page load — check if session is already valid
+  document.addEventListener("DOMContentLoaded", async () => {
+    const token = sessionStorage.getItem("sessionToken"); // Check sessionStorage first
+    if (token) {
+      try {
+        const user = await Parse.User.become(token); // Re-authenticate via Back4App
+        console.log("✅ Session verified for:", user.getUsername());
+        window.location.href = "../User_profiles_posting/profile.html";
+        return;
+      } catch (err) {
+        console.warn("⚠️ Invalid or expired token. Logging out...");
+        sessionStorage.removeItem("sessionToken");
+        await Parse.User.logOut();
+      }
+    }
 
-            try {
-                await Parse.User.logIn(username, password);
-                alert("Login successful!");
-                window.location.href = "../User_profiles_posting/profile.html";
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        }
-    </script>
+    // If we get here, no valid session
+    console.log("No active session found — please log in.");
+  });
+
+  // 💡 Handle login submission
+  async function loginUser(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      // Log in through Back4App
+      const user = await Parse.User.logIn(username, password);
+
+      // Get session token from Back4App
+      const token = user.getSessionToken();
+
+      // Save token to sessionStorage (not localStorage)
+      sessionStorage.setItem("sessionToken", token);
+
+      alert("✅ Login successful!");
+      window.location.href = "../User_profiles_posting/profile.html";
+    } catch (error) {
+      alert("❌ Error: " + error.message);
+    }
+  }
+</script>
+
     <style>
         .small-btn {
             font-size: 0.9em;

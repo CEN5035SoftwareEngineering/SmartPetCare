@@ -26,27 +26,12 @@
   </div>
 </div>
 
+<main class="container">
+  <h1>Search for a User</h1>
+  <input type="text" id="zipcode" placeholder="Enter the ZIP code of the user" />
+  <button onClick="searchByZip()">Search</button>
 
-
-  <!-- Search Section
-  <main class="container">
-    <h1>Find Trusted Sitters</h1>
-    <p>Enter your ZIP code to find available pet caretakers nearby.</p>
-
-    <div class="search-box">
-      <input type="text" id="zipSearch" placeholder="Enter ZIP Code (e.g., 33431)" maxlength="10">
-      <button class="btn teal" id="searchBtn">Search</button>
-    </div>
-
-    <section id="results" class="results"></section>
-  </main> -->
-
-<main class="search-container">
-  <h1>Search Users</h1>
-  <input type="text" id="searchInput" placeholder="Enter username..." />
-  <button id="searchBtn">Search</button>
-
-  <ul id="searchResults"></ul>
+  <ul id="results"></ul>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
@@ -57,7 +42,6 @@
     Parse.serverURL = 'https://parseapi.back4app.com/';
   </script>
 
-  <!-- <script src="https://npmcdn.com/parse/dist/parse.min.js"></script> -->
   <script src="search.js"></script>
   <script src="back4app-init.js"></script>
 </body>

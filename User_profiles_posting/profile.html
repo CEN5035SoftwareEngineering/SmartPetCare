@@ -27,6 +27,29 @@
       <button id="logoutBtn" class="btn small-btn">Logout</button>
     </div>
   </div>
+<!-- Test to see if the user is logged in...? -->
+  <script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const currentUser = Parse.User.current();
+
+  if (!currentUser) {
+    console.warn("⚠️ No user session found. Redirecting to login.");
+    window.location.href = "../User_login_signup/login.html";
+    return;
+  }
+
+  try {
+    // ✅ Validate session with Back4App
+    await currentUser.fetch();
+    console.log("✅ User is authenticated with Back4App:", currentUser.getUsername());
+  } catch (error) {
+    console.error("❌ Session invalid or expired:", error);
+    await Parse.User.logOut();
+    window.location.href = "../User_login_signup/login.html";
+  }
+});
+</script>
+
   <main class="container">
     <h1>My Profile</h1>
     <p>Manage your account below</p>

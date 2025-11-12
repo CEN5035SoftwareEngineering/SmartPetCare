@@ -1,7 +1,23 @@
 // Initialize Parse
 Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
 Parse.serverURL = "https://parseapi.back4app.com/";
+(async () => {
+  const token = sessionStorage.getItem("sessionToken");
+  if (!token) {
+    console.warn("No token found — redirecting to login.");
+    window.location.href = "../User_login_signup/login.html";
+    return;
+  }
 
+  try {
+    const user = await Parse.User.become(token);
+    console.log("✅ Authenticated as:", user.getUsername());
+  } catch (err) {
+    console.error("❌ Invalid token:", err.message);
+    sessionStorage.removeItem("sessionToken");
+    window.location.href = "../User_login_signup/login.html";
+  }
+})();
 async function getCurrentUser() {
   const user = Parse.User.current();
   if (!user) {
