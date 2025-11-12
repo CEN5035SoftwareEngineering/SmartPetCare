@@ -53,9 +53,21 @@ async function createFeedback() {
 
   try {
     // Find target user
-    const userQuery = new Parse.Query(Parse.User);
-    userQuery.equalTo("username", targetUsername);
-    const targetUser = await userQuery.first(); // ✅ Do NOT use useMasterKey here
+    // Call the cloud function to safely find any user
+const targetUserData = await Parse.Cloud.run("findUserByUsername", { username: targetUsername });
+
+if (!targetUserData) {
+  alert("No user found with that username.");
+  return;
+}
+
+// Create a pointer manually using the objectId returned
+const targetUser = {
+  __type: "Pointer",
+  className: "_User",
+  objectId: targetUserData.objectId,
+};
+
 
     if (!targetUser) {
       alert("No user found with that username.");
@@ -98,18 +110,57 @@ async function createFeedback() {
 // -----------------------------
 // List feedback
 // -----------------------------
+// async function listFeedback() {
+//   const feedbackList = document.getElementById("feedbackList");
+//   feedbackList.innerHTML = "<p>Loading...</p>";
+
+//   try {
+//     const Feedback = Parse.Object.extend("Feedback");
+//     const query = new Parse.Query(Feedback);
+//     query.include("author");
+//     query.include("target");
+//     query.descending("createdAt");
+
+//     const results = await query.find();
+
+//     if (results.length === 0) {
+//       feedbackList.innerHTML = "<p>No feedback yet.</p>";
+//       return;
+//     }
+
+//     feedbackList.innerHTML = results
+//       .map((fb) => {
+//         const author = fb.get("author");
+//         const target = fb.get("target");
+//         const authorName = author ? author.get("username") : "Anonymous";
+//         const targetName = target ? target.get("username") : "Unknown";
+//         const role = fb.get("role") || "";
+//         const rating = fb.get("rating") || 0;
+//         const text = fb.get("text") || "";
+//         const stars = "⭐".repeat(rating);
+
+//         return `
+//           <div class="feedback-item">
+//             <strong>${authorName}</strong> (${role}) → <em>${targetName}</em><br>
+//             <div class="rating">${stars} (${rating}/5)</div>
+//             <p>${text}</p>
+//             <small>${new Date(fb.createdAt).toLocaleString()}</small>
+//           </div>
+//         `;
+//       })
+//       .join("");
+//   } catch (err) {
+//     console.error("❌ Error listing feedback:", err);
+//     feedbackList.innerHTML = `<p style="color:red;">${err.message}</p>`;
+//   }
+// }
+
 async function listFeedback() {
   const feedbackList = document.getElementById("feedbackList");
   feedbackList.innerHTML = "<p>Loading...</p>";
 
   try {
-    const Feedback = Parse.Object.extend("Feedback");
-    const query = new Parse.Query(Feedback);
-    query.include("author");
-    query.include("target");
-    query.descending("createdAt");
-
-    const results = await query.find();
+    const results = await Parse.Cloud.run("getAllFeedback");
 
     if (results.length === 0) {
       feedbackList.innerHTML = "<p>No feedback yet.</p>";
@@ -118,20 +169,12 @@ async function listFeedback() {
 
     feedbackList.innerHTML = results
       .map((fb) => {
-        const author = fb.get("author");
-        const target = fb.get("target");
-        const authorName = author ? author.get("username") : "Anonymous";
-        const targetName = target ? target.get("username") : "Unknown";
-        const role = fb.get("role") || "";
-        const rating = fb.get("rating") || 0;
-        const text = fb.get("text") || "";
-        const stars = "⭐".repeat(rating);
-
+        const stars = "⭐".repeat(fb.rating);
         return `
           <div class="feedback-item">
-            <strong>${authorName}</strong> (${role}) → <em>${targetName}</em><br>
-            <div class="rating">${stars} (${rating}/5)</div>
-            <p>${text}</p>
+            <strong>${fb.author}</strong> (${fb.role}) → <em>${fb.target}</em><br>
+            <div class="rating">${stars} (${fb.rating}/5)</div>
+            <p>${fb.text}</p>
             <small>${new Date(fb.createdAt).toLocaleString()}</small>
           </div>
         `;
@@ -142,6 +185,7 @@ async function listFeedback() {
     feedbackList.innerHTML = `<p style="color:red;">${err.message}</p>`;
   }
 }
+
 
 // -----------------------------
 // Auto-load feedback on page load
