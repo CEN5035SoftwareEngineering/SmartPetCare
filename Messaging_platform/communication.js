@@ -109,7 +109,6 @@ async function addToContacts(contactUserId, contactName) {
     alert("Error adding contact: " + err.message);
   }
 }
-
 async function listContacts() {
   const currentUser = await getCurrentUser();
   if (!currentUser) return;
@@ -118,29 +117,23 @@ async function listContacts() {
   contactList.innerHTML = "<li>Loading contacts...</li>";
 
   try {
-    // Fetch contacts where current user is the 'owner'
-    const query = new Parse.Query("Contacts");
-    query.equalTo("owner", currentUser); // match your addToContacts() naming
-    query.include("contact");
-    const results = await query.find();
+    // Call Cloud Code instead of querying directly
+    const results = await Parse.Cloud.run("listContacts");
 
     contactList.innerHTML = "";
 
-    if (results.length === 0) {
+    if (!results || results.length === 0) {
       contactList.innerHTML = "<li>No contacts yet.</li>";
       return;
     }
 
-    results.forEach(c => {
-      const contactUser = c.get("contact");
-      const name = contactUser?.get("username") || "Unknown User";
-
+    results.forEach((c) => {
       const li = document.createElement("li");
       li.classList.add("contact-item");
-      li.textContent = name;
+      li.textContent = c.username;
 
       li.addEventListener("click", () => {
-        openChat(contactUser.id, name);
+        openChat(c.id, c.username);
       });
 
       contactList.appendChild(li);
@@ -150,9 +143,10 @@ async function listContacts() {
     contactList.innerHTML = `<li>Error loading contacts: ${err.message}</li>`;
   }
 }
-listContacts(); //LAURA WILL MESS WITH THIS SOME MORE
+// Load when page opens
+listContacts();
 
-// 🗨️ Open chat with selected user
+//Open chat with selected user
 async function openChat(userId, username) {
   const chatHeader = document.getElementById("chatHeader");
   const chatBox = document.getElementById("chatBox");
@@ -174,13 +168,94 @@ async function openChat(userId, username) {
   if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+let currentReceiverId = null;
+
+// 📥 Load messages between the logged-in user and the selected contact
+// async function loadConversation(otherUserId) {
+//   const currentUser = await getCurrentUser();
+//   if (!currentUser) return [];
+//   currentReceiverId = otherUserId;
+
+//   try {
+//     // Call Cloud Code to fetch conversation messages
+//     const messages = await Parse.Cloud.run("loadConversation", {
+//       otherUserId: otherUserId,
+//     });
+
+//     const chatBox = document.getElementById("chatBox");
+//     chatBox.innerHTML = "";
+
+//     if (messages.length === 0) {
+//       chatBox.innerHTML = "<p>No messages yet. Say hi!</p>";
+//       return;
+//     }
+
+//     // Render messages
+//     messages.forEach((msg) => {
+//       const from =
+//         msg.senderId === currentUser.id ? "You" : msg.senderUsername;
+//       const p = document.createElement("p");
+//       p.innerHTML = `<strong>${from}:</strong> ${msg.text}`;
+//       chatBox.appendChild(p);
+//     });
+
+//     // Scroll to bottom
+//     chatBox.scrollTop = chatBox.scrollHeight;
+//   } catch (err) {
+//     console.error("Error loading conversation:", err);
+//     document.getElementById("chatBox").innerHTML =
+//       `<p style="color:red;">${err.message}</p>`;
+//   }
+// }
+// 📥 Load messages between the logged-in user and the selected contact
+async function loadConversation(otherUserId) {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) return [];
+
+  currentReceiverId = otherUserId;
+
+  try {
+    // Call Cloud Code to fetch conversation messages
+    const messages = await Parse.Cloud.run("loadConversation", {
+      otherUserId: otherUserId,
+    });
+
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = "";
+
+    if (!messages || messages.length === 0) {
+      chatBox.innerHTML = "<p>No messages yet. Say hi!</p>";
+      return;
+    }
+
+    // Render messages
+    messages.forEach((msg) => {
+      const from =
+        msg.senderId === currentUser.id
+          ? "You"
+          : msg.senderUsername || "Unknown User";
+
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>${from}:</strong> ${msg.text}`;
+      chatBox.appendChild(p);
+    });
+
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+  } catch (err) {
+    console.error("Error loading conversation:", err);
+    document.getElementById("chatBox").innerHTML =
+      `<p style="color:red;">${err.message}</p>`;
+  }
+}
 
 
-// 💬 Send message
+
+// 💬 Send message using Cloud Code
 async function sendMessage(receiverId, text) {
   const currentUser = await getCurrentUser();
   if (!currentUser) {
-    alert("No logged-in user found.");
+    alert("You must be logged in to send messages.");
     return;
   }
 
@@ -189,36 +264,15 @@ async function sendMessage(receiverId, text) {
     return;
   }
 
-  // Get receiver directly from _User
-  const userQuery = new Parse.Query(Parse.User);
-  let receiver;
   try {
-    receiver = await userQuery.get(receiverId);
-  } catch (err) {
-    console.error("Receiver not found:", err);
-    alert("Could not find receiver user account.");
-    return;
-  }
+    // Call the Cloud Function
+    const result = await Parse.Cloud.run("sendMessage", { receiverId, text });
 
-  // --- Save message to 'Messages' class ---
-  const Message = Parse.Object.extend("Messages");
-  const message = new Message();
-  message.set("sender", currentUser);
-  message.set("receiver", receiver);
-  message.set("text", text);
-  message.set("read", false);
-
-  try {
-    await message.save();
-
-    console.log("✅ Message sent!");
+    console.log("✅ Message sent successfully!", result);
     document.getElementById("messageInput").value = "";
 
-    // Refresh conversation
+    // Reload conversation immediately
     await loadConversation(receiverId);
-
-    // Update contacts for both users
-    await updateContacts(currentUser, receiver);
   } catch (error) {
     console.error("❌ Error sending message:", error);
     alert("Error sending message: " + error.message);
@@ -226,40 +280,39 @@ async function sendMessage(receiverId, text) {
 }
 
 
+// // 🔄 Ensure both users appear in each other's contact lists
+// async function updateContacts(currentUser, receiver) {
+//   const Contacts = Parse.Object.extend("Contacts");
 
-// 🔄 Ensure both users appear in each other's contact lists
-async function updateContacts(currentUser, receiver) {
-  const Contacts = Parse.Object.extend("Contacts");
+//   // Check if this contact pair already exists
+//   const query = new Parse.Query(Contacts);
+//   query.equalTo("user", currentUser);
+//   query.equalTo("contact", receiver);
+//   const existing = await query.first();
 
-  // Check if this contact pair already exists
-  const query = new Parse.Query(Contacts);
-  query.equalTo("user", currentUser);
-  query.equalTo("contact", receiver);
-  const existing = await query.first();
+//   // If not, create it
+//   if (!existing) {
+//     const contact = new Contacts();
+//     contact.set("user", currentUser);
+//     contact.set("contact", receiver);
+//     await contact.save();
+//     console.log(`🤝 Added ${receiver.get("username")} to contacts`);
+//     await listContacts(); // refresh sidebar
+//   }
+// }
 
-  // If not, create it
-  if (!existing) {
-    const contact = new Contacts();
-    contact.set("user", currentUser);
-    contact.set("contact", receiver);
-    await contact.save();
-    console.log(`🤝 Added ${receiver.get("username")} to contacts`);
-    await listContacts(); // refresh sidebar
-  }
-}
+//sending button to send the message
+document.getElementById("sendBtn").addEventListener("click", async () => {
+  const text = document.getElementById("messageInput").value;
+  const receiverId = currentReceiverId; // this should be set in loadConversation()
+  await sendMessage(receiverId, text);
+});
 
 
-
-// 🔘 Hook up buttons to UI
-document.getElementById("searchBtn").onclick = async () => {
-  await searchUsers();
-};
-
-document.getElementById("sendBtn").onclick = async () => {
-  const msg = document.getElementById("messageInput").value.trim();
-  const receiverId = document.getElementById("receiverId").value;
-  await sendMessage(receiverId, msg);
-};
+// // 🔘 Hook up buttons to UI
+// document.getElementById("searchBtn").onclick = async () => {
+//   await searchUsers();
+// };
 
 
 
