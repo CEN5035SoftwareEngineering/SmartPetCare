@@ -1,225 +1,348 @@
+/* ---------------------------------------------------------
+   GLOBAL
+--------------------------------------------------------- */
 
-/* ---------- Color Scheme (same palette) ---------- */
-:root{
+/* Color Palette */
+:root {
   --light-gray: #DBDDDB;
   --teal: #63B4B4;
   --black: #0D1416;
   --dark-gray: #808384;
-  --olive-green: #96b299;
-
-  /* Neutrals for cards/lines */
+  --olive: #96b299;
   --white: #ffffff;
-  --border: #E5E7EB;           /* slate-200-ish */
-  --muted: #5B6770;            /* slate-600-ish */
-
-  /* Brand alias (used by button + accents) */
-  --brand: var(--teal);
-  --brand-600: #4aa3a3;        /* darker hover */
-  --focus: #2dd4bf;            /* focus ring teal-ish */
-
-  /* Rounded + shadow */
-  --r-xl: 1rem;
-  --r-2xl: 1.25rem;
-  --shadow: 0 10px 24px rgba(0,0,0,.08);
+  --shadow: rgba(0, 0, 0, 0.12);
 }
 
-/* ---------- Base ---------- */
-html { box-sizing: border-box; font-size: 16px; scroll-behavior: smooth; }
-*,*::before,*::after { box-sizing: inherit; }
-
-body{
+body {
+  background: #e5e7eb; /* light gray like screenshot */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   margin: 0;
-  color: var(--black);
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: var(--light-gray);
-  /* the page already has a fixed navbar */
-  padding-top: 70px;
+  padding: 0;
 }
 
-/* ---------- Navbar (matches styles.css) ---------- */
-.navbar{
+/* Add spacing below fixed navbar so content doesn't overlap */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 100px 20px 40px 20px; /* top padding increased to 100px to clear navbar */
+}
+
+
+/* Page title */
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color:var(--teal); /* teal */
+  margin-bottom: 35px;
+}
+/* =========================================
+   NAVIGATION BAR (Updated to match profile page)
+========================================= */
+.navbar {
+  width: 100%;
   background: var(--teal);
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 1000;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: .8em 1.2em;
-  box-shadow: 0 2px 5px rgba(0,0,0,.2);
-}
-.nav-brand a{ color:#fff; text-decoration:none; font-weight:700; font-size:1.5rem; }
-.nav-links{ display:flex; gap:15px; }
-.nav-links a{
-  color:#fff; text-decoration:none; padding:10px 18px; border-radius:6px; font-weight:700; transition:.25s;
-}
-.nav-links a:hover{ background: var(--olive-green); }
-.menu-toggle{ display:none; }
-.menu-icon{ display:none; color:#fff; font-size:1.8rem; cursor:pointer; }
-
-@media (max-width:768px){
-  .menu-icon{ display:block; }
-  .nav-links{
-    display:none; flex-direction:column; background:var(--teal);
-    position:absolute; top:60px; left:0; right:0; padding:10px 0;
-  }
-  .menu-toggle:checked + .menu-icon + .nav-links{ display:flex; }
-  .nav-links a{ display:block; text-align:center; padding:14px; }
-}
-
-/* ---------- Shared components ---------- */
-.card{
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--r-2xl);
-  box-shadow: var(--shadow);
-}
-
-/* subtle “badge” text */
-.muted{ color: var(--muted); }
-
-/* primary button (used for Book) */
-.btn-primary{
-  background: var(--brand);
-  color:#fff; border:0; border-radius:.6rem; font-weight:700;
-  height: 44px; padding: 0 20px; cursor: pointer;
-  transition: background .2s ease, opacity .2s ease;
-}
-.btn-primary:hover{ background: var(--brand-600); }
-.btn-primary:disabled{ opacity:.5; cursor:not-allowed; }
-.btn-primary:focus{ outline:2px solid var(--focus); outline-offset:2px; }
-
-/* ghost / outline controls */
-.btn-ghost{
-  background: transparent; border:1px solid var(--border);
-  border-radius: .6rem; height:36px; padding:0 10px; cursor:pointer;
-}
-.btn-ghost:hover{ background:#f7f7f7; }
-
-/* ---------- Service Picker ---------- */
-#selectedService img{ border-radius: .75rem; }
-#serviceList .divide-y > * + *{ border-top:1px solid var(--border); }
-#serviceList .pickService{
-  border:1px solid var(--border); border-radius:999px; padding:.5rem 1rem;
-  background:#fff; cursor:pointer; transition: background .2s ease;
-}
-#serviceList .pickService:hover{ background:#f8fafc; }
-
-/* ---------- Date Strip ---------- */
-/* Date strip (make it look like the 2nd screenshot) */
-#dateStrip {
-  gap: .5rem;            /* tighter gap than default */
-  padding-bottom: .25rem;
-}
-
-.date-pill {
-  appearance: none;
-  border: 1px solid var(--border);
-  background: #fff;
-  color: var(--black);
-  border-radius: 14px;
-  padding: .6rem .9rem;
-  min-width: 84px;                 /* consistent width */
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
-  cursor: pointer;
-  display: inline-flex;
-  flex-direction: column;
+  padding: 16px 24px;
+  display: flex;
   align-items: center;
-  line-height: 1.15;
-  transition: background .2s, color .2s, border-color .2s, transform .05s;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  color: white;
 }
 
-.date-pill:active { transform: translateY(1px); }
-
-.date-pill .top   { font-weight: 700; font-size: .9rem; }
-.date-pill .bot   { font-size: .72rem; color: var(--dark-gray); margin-top: .15rem; }
-
-/* selected pill */
-.date-pill[aria-selected="true"] {
-  background: var(--brand);
-  color: var(--teal);
-  border-color: transparent;
+/* Brand */
+.nav-brand a {
+  text-decoration: none;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
 }
-.date-pill[aria-selected="true"] .bot { color: var(--teal); }
 
-/* prev/next chevrons to match look */
-#prevWeek, #nextWeek {
-  border: 1px solid var(--border);
-  background: #fff;
-  color: var(--black);
+/* Navbar links */
+.nav-links {
+  display: flex;
+  gap: 32px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  opacity: 0.75;
+}
+
+/* Mobile toggle button */
+.menu-icon {
+  font-size: 28px;
+  cursor: pointer;
+  display: none;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 750px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    right: 24px;
+    top: 72px;
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+
+  .nav-links a {
+    color: var(--teal);
+    padding: 12px 0;
+    text-align: center;
+  }
+
+  .menu-toggle:checked + .menu-icon + .nav-links {
+    display: flex;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   CARDS (match screenshot)
+--------------------------------------------------------- */
+
+.card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  margin-bottom: 32px;
+}
+
+/* Service card */
+.selected-service {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.service-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* Service details */
+.service-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.service-desc {
+  font-size: 15px;
+  color: #4b5563;
+  margin-top: 4px;
+}
+
+.service-meta {
+  margin-top: 4px;
+  font-size: 15px;
+  color: #374151;
+}
+
+.service-change {
+  color:var(--teal);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------
+   SERVICE LIST
+--------------------------------------------------------- */
+
+.service-list .service-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.service-info .service-name {
+  margin-bottom: 2px;
+}
+
+.button {
+  background:var(--teal);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button.small {
+  padding: 6px 10px;
+}
+
+/* ---------------------------------------------------------
+   DATE PICKER
+--------------------------------------------------------- */
+
+.date-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.date-controls button {
+  background: #d1d5db;
+  border: none;
+  padding: 6px 12px;
   border-radius: 8px;
-  height: 34px; width: 34px;
-  display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,.04);
+  cursor: pointer;
+  font-size: 16px;
 }
-#prevWeek:hover, #nextWeek:hover { background: #f8fafc; }
 
-#dateStrip{
-  /* parent is flex via HTML classes; we control button look here */
+.date-controls button:hover {
+  background: #c0c4cc;
 }
-#dateStrip button{
-  background:#fff;
-  border:1px solid var(--border);
+
+/* Date strip */
+.date-strip {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+/* Individual date item */
+.date-strip div {
+  background: white;
   border-radius: 14px;
-  padding: .6rem .9rem;
-  min-width: 84px;
-  text-align:center;
-  line-height:1.1;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
-  cursor:pointer;
-  transition: background .2s ease, color .2s ease, border-color .2s ease;
-}
-#dateStrip button[data-active="true"]{
-  background: var(--brand);
-  color: #fff;
-  border-color: transparent;
-}
-#dateStrip button:focus{ outline:2px solid var(--focus); outline-offset:2px; }
-
-/* ---------- Time Buttons ---------- */
-#timesMorning button,
-#timesAfternoon button{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius: 14px;
-  padding: .5rem .9rem;
-  cursor:pointer;
-  transition: background .2s ease, color .2s ease, border-color .2s ease;
-}
-#timesMorning button[data-active="true"],
-#timesAfternoon button[data-active="true"]{
-  background:#0f172a; /* near slate-900 */
-  color:#fff;
-  border-color: transparent;
-}
-#timesMorning button:hover,
-#timesAfternoon button:hover{ background:#f8fafc; }
-
-/* ---------- Payment / Stripe Card Element ---------- */
-#paymentForm #card-element{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:.6rem;
-  padding:12px;
-}
-#card-errors{ margin-top:4px; }
-
-/* Checkbox / label alignment */
-#paymentForm label input[type="checkbox"]{
-  width:16px; height:16px; accent-color: var(--brand);
+  padding: 12px 16px;
+  min-width: 80px;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
-/* ---------- Headings ---------- */
-h1{ margin:0 0 .5rem; color: var(--teal); }
-h2{ margin:0; color: var(--black); }
+.date-strip div.selected {
+  background: var(--teal);
+  color: white;
+}
 
-/* ---------- Layout helpers ---------- */
-main{ /* main has utility classes already; this is safety */ }
-section{ min-width:0; } /* prevent overflow with flex/grid */
+/* ---------------------------------------------------------
+   TIME SLOTS
+--------------------------------------------------------- */
 
-/* ---------- Small utilities ---------- */
-.rounded-xl{ border-radius: var(--r-xl); }
-.text-muted{ color: var(--muted); }
+.time-group {
+  margin-bottom: 30px;
+}
 
-/* ---------- Responsive niceties ---------- */
-@media (max-width: 1024px){
-  /* tighten card padding a bit on smaller screens if you like */
+.time-label {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.times div {
+  background: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.times div.selected {
+  background: var(--teal);
+  color: white;
+}
+
+/* ---------------------------------------------------------
+   PAYMENT SECTION
+--------------------------------------------------------- */
+
+.payment-section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.text-muted {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 15px;
+}
+
+.card-element {
+  padding: 14px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+}
+
+.checkbox-line {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.card-errors {
+  color: red;
+  margin-top: 8px;
+}
+
+/* ---------------------------------------------------------
+   BOOK BUTTON
+--------------------------------------------------------- */
+
+.button.primary {
+  background: var(--teal);
+  width: 100%;
+  padding: 14px 0;
+  font-size: 18px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.button.primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.status-text {
+  margin-top: 10px;
+  display: block;
+  text-align: center;
+  font-size: 15px;
+  color: #374151;
 }

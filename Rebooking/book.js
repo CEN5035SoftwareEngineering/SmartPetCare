@@ -1,7 +1,12 @@
+// -------------------------------
 // Initialize Back4App
+// -------------------------------
 Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
 Parse.serverURL = "https://parseapi.back4app.com/";
-// Main code:
+
+// -------------------------------
+// Auth Check
+// -------------------------------
 (async () => {
   const token = sessionStorage.getItem("sessionToken");
   if (!token) {
@@ -19,57 +24,50 @@ Parse.serverURL = "https://parseapi.back4app.com/";
     window.location.href = "../User_login_signup/login.html";
   }
 })();
+
+// -------------------------------
+// Date Picker
+// -------------------------------
 const dateStrip = document.getElementById("dateStrip");
 let start = new Date();
 start.setHours(0, 0, 0, 0);
 let selectedDate = null;
 let selectedTime = null;
 
-// Example caretaker (replace with actual selected caretaker ID)
-const caretakerId = "PUT_CARETAKER_OBJECT_ID_HERE"; // TODO: set dynamically Not sure what this is or why it exists
-
+// Helper functions
 function formatDay(d) {
   return d.toLocaleDateString(undefined, { weekday: "short" });
 }
 function formatMD(d) {
   const m = d.toLocaleDateString(undefined, { month: "short" });
-  const day = d.getDate();
-  return `${m} ${day}`;
+  return `${m} ${d.getDate()}`;
 }
 
 function renderStrip() {
   dateStrip.innerHTML = "";
-
   for (let i = 0; i < 7; i++) {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
 
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "date-pill";
-    btn.innerHTML = `
-      <span class="top">${formatDay(d)}</span>
-      <span class="bot">${formatMD(d)}</span>
-    `;
+    const div = document.createElement("div");
+    div.className = "date-pill";
+    div.textContent = `${formatDay(d)}, ${formatMD(d)}`; // <-- Updated line
 
     if (!selectedDate && i === 0) selectedDate = new Date(d);
-    const isActive =
-      selectedDate && d.toDateString() === selectedDate.toDateString();
-    btn.setAttribute("aria-selected", isActive ? "true" : "false");
+    if (selectedDate.toDateString() === d.toDateString()) div.classList.add("selected");
 
-    btn.addEventListener("click", () => {
+    div.addEventListener("click", () => {
       selectedDate = new Date(d);
-      [...dateStrip.children].forEach((el) =>
-        el.setAttribute("aria-selected", "false")
-      );
-      btn.setAttribute("aria-selected", "true");
+      [...dateStrip.children].forEach((el) => el.classList.remove("selected"));
+      div.classList.add("selected");
       renderTimes();
       checkReady();
     });
 
-    dateStrip.appendChild(btn);
+    dateStrip.appendChild(div);
   }
 }
+
 
 document.getElementById("prevWeek").addEventListener("click", () => {
   start.setDate(start.getDate() - 7);
@@ -89,26 +87,25 @@ document.getElementById("nextWeek").addEventListener("click", () => {
 
 renderStrip();
 
-// Time slots
+// -------------------------------
+// Time Slots
+// -------------------------------
 const timesMorning = ["9:00 AM", "9:30 AM", "10:30 AM"];
 const timesAfternoon = ["12:00 PM", "1:30 PM", "3:00 PM"];
 
 function renderTimeButtons(container, times) {
   container.innerHTML = "";
   times.forEach((t) => {
-    const b = document.createElement("button");
-    b.className =
-      "px-4 py-2 rounded-xl border hover:bg-slate-50 data-[active=true]:bg-slate-900 data-[active=true]:text-white";
-    b.textContent = t;
-    b.addEventListener("click", () => {
+    const btn = document.createElement("div");
+    btn.className = "times";
+    btn.textContent = t;
+    btn.addEventListener("click", () => {
       selectedTime = t;
-      document
-        .querySelectorAll("#timesMorning button, #timesAfternoon button")
-        .forEach((x) => (x.dataset.active = "false"));
-      b.dataset.active = "true";
+      document.querySelectorAll("#timesMorning div, #timesAfternoon div").forEach((x) => x.classList.remove("selected"));
+      btn.classList.add("selected");
       checkReady();
     });
-    container.appendChild(b);
+    container.appendChild(btn);
   });
 }
 
@@ -119,11 +116,14 @@ function renderTimes() {
 
 renderTimes();
 
-// Booking submission
+// -------------------------------
+// Payment + Booking
+// -------------------------------
 const agree = document.getElementById("agree");
-agree.addEventListener("change", checkReady);
 const bookBtn = document.getElementById("bookBtn");
 const status = document.getElementById("status");
+
+agree.addEventListener("change", checkReady);
 
 function checkReady() {
   const ok = selectedDate && selectedTime && agree.checked;
@@ -139,53 +139,9 @@ function checkReady() {
 }
 checkReady();
 
-bookBtn.addEventListener("click", async () => {
-  if (bookBtn.disabled) return;
-  const {token, error} = await stripe.createToken(card);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  // Now token.id can be sent to your server to actually charge the card
-  console.log("Stripe token:", token.id);
-  
-  const currentUser = Parse.User.current();
-  if (!currentUser) {
-    alert("Please log in before booking.");
-    return;
-  }
-
-  try {
-    const Booking = Parse.Object.extend("Booking");
-    const booking = new Booking();
-
-    booking.set("petParent", currentUser);
-    booking.set("caretaker", {
-      __type: "Pointer",
-      className: "_User",
-      objectId: caretakerId,
-    });
-    booking.set("date", selectedDate);
-    booking.set("time", selectedTime);
-
-    await booking.save();
-
-    alert(
-      `✅ Booking confirmed!\nDate: ${selectedDate.toLocaleDateString()}\nTime: ${selectedTime}`
-    );
-  } catch (err) {
-    console.error("Error saving booking:", err);
-    alert("❌ Failed to save booking: " + err.message);
-  }
-});
-
-// --- Stripe Payment Setup ---
-const stripe = Stripe("pk_test_YourPublicKeyHere"); // replace with your Stripe public key
+// Stripe setup
+const stripe = Stripe("pk_test_51SMxWc0f3wetAbTdVrFV7aMX1hZlvo6LPImQfMon4rmyQmkKzxCTtqTrwSBtXvoHRFyzNZa0YNgswVq6967ASi7G00l9AHh6q6"); // Replace with your Stripe public key
 const elements = stripe.elements();
-
-// Create the card element
 const card = elements.create("card", {
   style: {
     base: {
@@ -197,22 +153,56 @@ const card = elements.create("card", {
 });
 card.mount('#card-element');
 
-// Show real-time validation errors
 card.on('change', (event) => {
   const displayError = document.getElementById('card-errors');
   displayError.textContent = event.error ? event.error.message : '';
 });
 
-// Modify checkReady() to also check if card is ready
-function checkReady() {
-  const ok = selectedDate && selectedTime && agree.checked;
-  bookBtn.disabled = !ok;
+bookBtn.addEventListener("click", async () => {
+  if (bookBtn.disabled) return;
 
-  if (!selectedDate || !selectedTime) {
-    status.textContent = "Select a date and time.";
-  } else if (!agree.checked) {
-    status.textContent = "Agree to terms to continue.";
-  } else {
-    status.textContent = "";
+  // 1. Create Stripe token
+  const {token, error} = await stripe.createToken(card);
+  if (error) {
+    alert(error.message);
+    return;
   }
-}
+
+  // 2. Get current user
+  const currentUser = Parse.User.current();
+  if (!currentUser) {
+    alert("Please log in before booking.");
+    return;
+  }
+
+  try {
+    const Booking = Parse.Object.extend("Booking");
+    const booking = new Booking();
+
+    // 3. Set fields
+    booking.set("petParent", currentUser);
+    booking.set("caretaker", {
+      __type: "Pointer",
+      className: "_User",
+      objectId: caretakerId, // selected caretaker ID
+    });
+    booking.set("date", selectedDate);
+    booking.set("time", selectedTime);
+    
+    // Optional: if you have service selection
+    booking.set("service", document.getElementById("svcName").textContent);
+    booking.set("price", parseFloat(document.getElementById("svcPrice").textContent.replace("$","")));
+    
+    booking.set("paymentStatus", "pending"); // until you process Stripe
+
+    await booking.save();
+
+    alert(`✅ Booking confirmed!\nDate: ${selectedDate.toLocaleDateString()}\nTime: ${selectedTime}`);
+
+    // You could also redirect the user here or reset the form
+
+  } catch (err) {
+    console.error("Error saving booking:", err);
+    alert("❌ Failed to save booking: " + err.message);
+  }
+});
