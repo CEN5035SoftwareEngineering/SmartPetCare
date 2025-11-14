@@ -1,16 +1,12 @@
-// search.js
-
-// // Initialize Parse (do this only once per page!)
+// // Initialize Parse
 // Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
 // Parse.serverURL = "https://parseapi.back4app.com/";
 
 // document.addEventListener("DOMContentLoaded", () => {
-//   // DOM elements
 //   const searchInput = document.getElementById("zipcode");
 //   const searchBtn = document.getElementById("searchBtn");
 //   const resultsDiv = document.getElementById("results");
 
-//   // Check login status
 //   const currentUser = Parse.User.current();
 //   if (!currentUser) {
 //     alert("You must be logged in to use this page.");
@@ -18,7 +14,6 @@
 //     return;
 //   }
 
-//   // Main search function - by Zip Code
 //   async function searchByZip() {
 //     const zip = searchInput.value.trim();
 //     resultsDiv.innerHTML = "";
@@ -36,37 +31,32 @@
 //         return;
 //       }
 
-//       // Build and display each result card
 //       results.forEach(profile => {
 //         const user = profile.get("user");
 //         const username = user?.get("username") || "Unknown";
-
-//         const type = profile.className; // PetParent or Caretaker
-//         const name = profile.get("name") || "No name";
-//         const zipCode = profile.get("zip") || "N/A";
+//         // const type = profile.className;
+//         const type = profile.className === "Caretaker" ? "Caretaker" : "PetParent";
+//         const name = profile.get("name") || "";
+//         const zipCode = profile.get("zip") || "";
 //         const profileId = profile.id;
 //         const profileLink = `../User_profiles_posting/profile.html?id=${profileId}`;
 
 //         const card = document.createElement("div");
 //         card.classList.add("user-card");
 
-//         // Common info for both roles
 //         let html = `
-//           <a href="${profileLink}" target="_blank">
-//             <strong>${username}</strong>
-//           </a><br>
-//           Name: ${name}<br>
-//           Type: ${type}<br>
-//           ZIP: ${zipCode}<br>
+//           <a href="${profileLink}" target="_blank"><strong>${username}</strong></a><br>
+//           ${name}<br>
+//           ${type}<br>
+//           ${zipCode}<br>
 //         `;
 
-//         // Caretaker-only fields
 //         if (type === "Caretaker") {
 //           const rate = profile.get("rate");
 //           const experience = profile.get("experience") || "Not listed";
 
 //           html += `
-//             Rate: $${rate !== undefined ? Number(rate).toFixed(2) : "N/A"} / hr<br>
+//             $${rate !== undefined ? Number(rate).toFixed(2) : "N/A"} / hr<br>
 //             Experience: ${experience}<br>
 //           `;
 //         }
@@ -81,10 +71,7 @@
 //     }
 //   }
 
-//   // Button click triggers search
 //   searchBtn.addEventListener("click", searchByZip);
-
-//   // Pressing Enter also triggers search
 //   searchInput.addEventListener("keyup", (e) => {
 //     if (e.key === "Enter") {
 //       searchByZip();
@@ -128,11 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
       results.forEach(profile => {
         const user = profile.get("user");
         const username = user?.get("username") || "Unknown";
-        const type = profile.className;
+        // const type = profile.className;
+        const type = profile.className === "Caretaker" ? "Caretaker" : "PetParent";
         const name = profile.get("name") || "";
         const zipCode = profile.get("zip") || "";
         const profileId = profile.id;
-        const profileLink = `../User_profiles_posting/profile.html?id=${profileId}`;
+        const profileLink = `../User_profiles_posting/profile.html?id=${profileId}&type=${type}`;
 
         const card = document.createElement("div");
         card.classList.add("user-card");
