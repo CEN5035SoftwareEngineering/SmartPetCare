@@ -1,4 +1,4 @@
-// // Profile.js
+// // Profile.js 
 // document.addEventListener("DOMContentLoaded", async () => {
 //   if (typeof Parse === "undefined") {
 //     console.error("Parse SDK not loaded!");
@@ -22,10 +22,23 @@
 //   const logoutBtn = document.getElementById("logoutBtn");
 //   const bookBtn = document.getElementById("bookCaretaker");
 
+//   // Logout
+//   if (logoutBtn) {
+//     logoutBtn.addEventListener("click", async () => {
+//       try {
+//         await Parse.User.logOut();
+//       } catch (e) {
+//         console.error("Error during logout:", e);
+//       }
+//       window.location.href = "../User_login_signup/login.html";
+//     });
+//   }
+
 //   // Public Profile View
 //   if (isPublicView) {
-//     profileTabs.classList.add("hidden");
 //     roleSelect.classList.add("hidden");
+//     profileTabs.classList.remove("hidden");
+//     profileRoleTabs.classList.add("hidden");
 //     contentTabs.classList.remove("hidden");
 
 //     const PetParent = Parse.Object.extend("PetParent");
@@ -41,7 +54,9 @@
 //       try {
 //         const caretakerProfile = await caretakerQuery.get(publicId);
 //         showCaretakerProfile(caretakerProfile);
-//         bookBtn.classList.remove("hidden");
+//         if (bookBtn) {
+//           bookBtn.classList.remove("hidden");
+//         }
 //       } catch (e2) {
 //         alert("Profile not found.");
 //         console.error(e2);
@@ -50,13 +65,13 @@
 //     return;
 //   }
 
-//   // Logout
-//   logoutBtn.addEventListener("click", async () => {
-//     await Parse.User.logOut();
+//   // If not public view, require login
+//   if (!currentUser) {
 //     window.location.href = "../User_login_signup/login.html";
-//   });
+//     return;
+//   }
 
-//   // Role Selection
+//   // Role selection
 //   document.getElementById("chooseParent").addEventListener("click", () => {
 //     showTab("parentTab");
 //     roleSelect.classList.add("hidden");
@@ -85,7 +100,7 @@
 //     });
 //   });
 
-//   // Pet Parent
+//   // Pet Parent Profile
 //   const saveParentBtn = document.getElementById("saveProfile");
 //   const editParentBtn = document.getElementById("editProfile");
 //   const parentForm = document.getElementById("parentForm");
@@ -118,6 +133,11 @@
 //       const dogPhotoFile = dogPhotoInput.files[0];
 //       const parentPhoto = parentPhotoFile ? new Parse.File(parentPhotoFile.name, parentPhotoFile) : null;
 //       const dogPhoto = dogPhotoFile ? new Parse.File(dogPhotoFile.name, dogPhotoFile) : null;
+
+//       const acl = petParent.getACL() || new Parse.ACL(currentUser);
+//       acl.setPublicReadAccess(true);
+//       acl.setWriteAccess(currentUser, true);
+//       petParent.setACL(acl);
 
 //       petParent.set("user", currentUser);
 //       if (parentPhoto) petParent.set("photo", parentPhoto);
@@ -194,7 +214,8 @@
 //     parentSection.classList.remove("hidden");
 //   }
 
-//   // Caretaker
+
+//   // Caretaker Profile 
 //   const saveCaretakerBtn = document.getElementById("saveCaretaker");
 //   const editCaretakerBtn = document.getElementById("editCaretaker");
 //   const caretakerForm = document.getElementById("caretakerForm");
@@ -218,6 +239,11 @@
 //       const photoFile = caretakerPhotoInput.files[0];
 //       const photo = photoFile ? new Parse.File(photoFile.name, photoFile) : null;
 
+//       const acl = caretaker.getACL() || new Parse.ACL(currentUser);
+//       acl.setPublicReadAccess(true);
+//       acl.setWriteAccess(currentUser, true);
+//       caretaker.setACL(acl);
+
 //       caretaker.set("user", currentUser);
 //       if (photo) caretaker.set("photo", photo);
 //       caretaker.set("name", document.getElementById("caretakerName").value);
@@ -231,7 +257,9 @@
 //       showCaretakerProfile(caretaker);
 //       profileRoleTabs.classList.add("hidden");
 //       contentTabs.classList.remove("hidden");
-//       bookBtn.classList.remove("hidden");
+//       if (bookBtn) {
+//         bookBtn.classList.remove("hidden");
+//       }
 //     } catch (err) {
 //       alert("Error saving caretaker: " + err.message);
 //       console.error(err);
@@ -312,14 +340,16 @@
 //       profileTabs.classList.remove("hidden");
 //       profileRoleTabs.classList.add("hidden");
 //       contentTabs.classList.remove("hidden");
-//       bookBtn.classList.remove("hidden");
+//       if (bookBtn) {
+//         bookBtn.classList.remove("hidden");
+//       }
 //     }
 //   }
 // });
 
-// //connect to the posting page
+// // Connect to posting page
 // document.getElementById('goToPostPage').addEventListener('click', () => {
-//   window.location.href = '../User_profiles_posting/post.html'; // Adjust path if needed
+//   window.location.href = '../User_profiles_posting/post.html';
 // });
 
 // Profile.js 
@@ -332,6 +362,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const currentUser = Parse.User.current();
   const urlParams = new URLSearchParams(window.location.search);
   const publicId = urlParams.get("id");
+  const typeParam = urlParams.get("type");
   const isPublicView = !!publicId;
 
   // DOM elements
@@ -346,40 +377,66 @@ document.addEventListener("DOMContentLoaded", async () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const bookBtn = document.getElementById("bookCaretaker");
 
+  // Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await Parse.User.logOut();
+      } catch (e) {
+        console.error("Error during logout:", e);
+      }
+      window.location.href = "../User_login_signup/login.html";
+    });
+  }
+
   // Public Profile View
   if (isPublicView) {
-    profileTabs.classList.add("hidden");
     roleSelect.classList.add("hidden");
+    profileTabs.classList.remove("hidden");
+    profileRoleTabs.classList.add("hidden");
     contentTabs.classList.remove("hidden");
 
     const PetParent = Parse.Object.extend("PetParent");
     const Caretaker = Parse.Object.extend("Caretaker");
 
-    const parentQuery = new Parse.Query(PetParent);
-    const caretakerQuery = new Parse.Query(Caretaker);
-
     try {
-      // TESTING THIS FIX: USING useMasterKey to allow loading other users' profiles
-      const parentProfile = await parentQuery.get(publicId, { useMasterKey: true });
-      showParentProfile(parentProfile);
-    } catch (e1) {
-      try {
-        const caretakerProfile = await caretakerQuery.get(publicId, { useMasterKey: true });
+      if (typeParam === "PetParent") {
+        const parentQuery = new Parse.Query(PetParent);
+        const parentProfile = await parentQuery.get(publicId);
+        showParentProfile(parentProfile);
+      } else if (typeParam === "Caretaker") {
+        const caretakerQuery = new Parse.Query(Caretaker);
+        const caretakerProfile = await caretakerQuery.get(publicId);
         showCaretakerProfile(caretakerProfile);
-        bookBtn.classList.remove("hidden");
-      } catch (e2) {
-        alert("Profile not found.");
-        console.error(e2);
+        if (bookBtn) {
+          bookBtn.classList.remove("hidden");
+        }
+      } else {
+        const parentQuery = new Parse.Query(PetParent);
+        try {
+          const parentProfile = await parentQuery.get(publicId);
+          showParentProfile(parentProfile);
+        } catch (e1) {
+          const caretakerQuery = new Parse.Query(Caretaker);
+          const caretakerProfile = await caretakerQuery.get(publicId);
+          showCaretakerProfile(caretakerProfile);
+          if (bookBtn) {
+            bookBtn.classList.remove("hidden");
+          }
+        }
       }
+    } catch (e) {
+      alert("Profile not found.");
+      console.error(e);
     }
     return;
   }
 
-  // Logout
-  logoutBtn.addEventListener("click", async () => {
-    await Parse.User.logOut();
+  // If not public view, require login
+  if (!currentUser) {
     window.location.href = "../User_login_signup/login.html";
-  });
+    return;
+  }
 
   // Role selection
   document.getElementById("chooseParent").addEventListener("click", () => {
@@ -444,6 +501,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const parentPhoto = parentPhotoFile ? new Parse.File(parentPhotoFile.name, parentPhotoFile) : null;
       const dogPhoto = dogPhotoFile ? new Parse.File(dogPhotoFile.name, dogPhotoFile) : null;
 
+      const acl = petParent.getACL() || new Parse.ACL(currentUser);
+      acl.setPublicReadAccess(true);
+      acl.setWriteAccess(currentUser, true);
+      petParent.setACL(acl);
+
       petParent.set("user", currentUser);
       if (parentPhoto) petParent.set("photo", parentPhoto);
       if (dogPhoto) petParent.set("dogPhoto", dogPhoto);
@@ -490,6 +552,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   function showParentProfile(profileObj) {
+    showTab("parentTab");
     const html = `
       <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <div style="display: flex; align-items: center; gap: 20px;">
@@ -544,6 +607,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const photoFile = caretakerPhotoInput.files[0];
       const photo = photoFile ? new Parse.File(photoFile.name, photoFile) : null;
 
+      const acl = caretaker.getACL() || new Parse.ACL(currentUser);
+      acl.setPublicReadAccess(true);
+      acl.setWriteAccess(currentUser, true);
+      caretaker.setACL(acl);
+
       caretaker.set("user", currentUser);
       if (photo) caretaker.set("photo", photo);
       caretaker.set("name", document.getElementById("caretakerName").value);
@@ -557,7 +625,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       showCaretakerProfile(caretaker);
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
-      bookBtn.classList.remove("hidden");
+      if (bookBtn) {
+        bookBtn.classList.remove("hidden");
+      }
     } catch (err) {
       alert("Error saving caretaker: " + err.message);
       console.error(err);
@@ -582,6 +652,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   function showCaretakerProfile(profileObj) {
+    showTab("caretakerTab");
     const html = `
       <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <div style="display: flex; align-items: center; gap: 20px;">
@@ -632,13 +703,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       profileTabs.classList.remove("hidden");
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
+
     } else if (caretakerProfile) {
       showCaretakerProfile(caretakerProfile);
       roleSelect.classList.add("hidden");
       profileTabs.classList.remove("hidden");
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
-      bookBtn.classList.remove("hidden");
+
+      // only caretaker profiles get a Book button (might make more sense only on public, unless they can edit)
+      if (bookBtn) {
+        bookBtn.classList.remove("hidden");
+      }
+    } else {
+      roleSelect.classList.remove("hidden");
     }
   }
 });

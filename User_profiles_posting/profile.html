@@ -27,35 +27,35 @@
       <button id="logoutBtn" class="btn small-btn">Logout</button>
     </div>
   </div>
-<!-- Test to see if the user is logged in...? -->
+  <!-- Test to see if the user is logged in...? -->
   <script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const currentUser = Parse.User.current();
+    document.addEventListener("DOMContentLoaded", async () => {
+      const currentUser = Parse.User.current();
 
-  if (!currentUser) {
-    console.warn("⚠️ No user session found. Redirecting to login.");
-    window.location.href = "../User_login_signup/login.html";
-    return;
-  }
+      if (!currentUser) {
+        console.warn("⚠️ No user session found. Redirecting to login.");
+        window.location.href = "../User_login_signup/login.html";
+        return;
+      }
 
-  try {
-    // ✅ Validate session with Back4App
-    await currentUser.fetch();
-    console.log("✅ User is authenticated with Back4App:", currentUser.getUsername());
-  } catch (error) {
-    console.error("❌ Session invalid or expired:", error);
-    await Parse.User.logOut();
-    window.location.href = "../User_login_signup/login.html";
-  }
-});
-</script>
+      try {
+        // ✅ Validate session with Back4App
+        await currentUser.fetch();
+        console.log("✅ User is authenticated with Back4App:", currentUser.getUsername());
+      } catch (error) {
+        console.error("❌ Session invalid or expired:", error);
+        await Parse.User.logOut();
+        window.location.href = "../User_login_signup/login.html";
+      }
+    });
+  </script>
 
   <main class="container">
     <h1>My Profile</h1>
     <p>Manage your account below</p>
 
     <!-- Role selection -->
-    <div id="roleSelect">
+    <div id="roleSelect" class="hidden">
       <p class="role-prompt">What type of profile would you like to create?</p>
       <div class="btn-group">
         <button id="chooseParent" class="btn teal">Create Pet Parent Profile</button>
@@ -165,8 +165,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h3>My Posts</h3>
         <div id="userPostsContainer">
           <!-- Posts placeholder -->
-           <div class="btn-group" style="margin: 20px 0;">
-              <button id="goToPostPage" class="btn olive">Go to Post Page</button>
+          <div class="btn-group" style="margin: 20px 0;">
+            <button id="goToPostPage" class="btn olive">Go to Post Page</button>
           </div>
         </div>
       </div>
