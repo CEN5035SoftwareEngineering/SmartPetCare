@@ -68,3 +68,9 @@ button {
 button:hover {
     background-color: var(--teal);
 }
+
+.small-btn {
+    font-size: 0.9em;
+    padding: 5px 10px;
+    margin-top: 10px;
+}

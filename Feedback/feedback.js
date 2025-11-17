@@ -107,54 +107,6 @@ const targetUser = {
   }
 }
 
-// -----------------------------
-// List feedback
-// -----------------------------
-// async function listFeedback() {
-//   const feedbackList = document.getElementById("feedbackList");
-//   feedbackList.innerHTML = "<p>Loading...</p>";
-
-//   try {
-//     const Feedback = Parse.Object.extend("Feedback");
-//     const query = new Parse.Query(Feedback);
-//     query.include("author");
-//     query.include("target");
-//     query.descending("createdAt");
-
-//     const results = await query.find();
-
-//     if (results.length === 0) {
-//       feedbackList.innerHTML = "<p>No feedback yet.</p>";
-//       return;
-//     }
-
-//     feedbackList.innerHTML = results
-//       .map((fb) => {
-//         const author = fb.get("author");
-//         const target = fb.get("target");
-//         const authorName = author ? author.get("username") : "Anonymous";
-//         const targetName = target ? target.get("username") : "Unknown";
-//         const role = fb.get("role") || "";
-//         const rating = fb.get("rating") || 0;
-//         const text = fb.get("text") || "";
-//         const stars = "⭐".repeat(rating);
-
-//         return `
-//           <div class="feedback-item">
-//             <strong>${authorName}</strong> (${role}) → <em>${targetName}</em><br>
-//             <div class="rating">${stars} (${rating}/5)</div>
-//             <p>${text}</p>
-//             <small>${new Date(fb.createdAt).toLocaleString()}</small>
-//           </div>
-//         `;
-//       })
-//       .join("");
-//   } catch (err) {
-//     console.error("❌ Error listing feedback:", err);
-//     feedbackList.innerHTML = `<p style="color:red;">${err.message}</p>`;
-//   }
-// }
-
 async function listFeedback() {
   const feedbackList = document.getElementById("feedbackList");
   feedbackList.innerHTML = "<p>Loading...</p>";
