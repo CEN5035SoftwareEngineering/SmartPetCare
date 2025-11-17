@@ -7,84 +7,84 @@
 }
 
 :root {
---light-gray: #DBDDDB;
---teal: #63B4B4;
---black: #0D1416;
---dark-gray: #808384;
---olive: #96b299;
+  --light-gray: #DBDDDB;
+  --teal: #63B4B4;
+  --black: #0D1416;
+  --dark-gray: #808384;
+  --olive: #96b299;
 }
+
 body {
-font-family: "Segoe UI", Arial, sans-serif;
-background-color: var(--light-gray);
-margin: 0;
-padding: 0;
-color: var(--teal);
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: var(--light-gray);
+  margin: 0;
+  padding: 0;
+  color: var(--teal);
 }
 
 .navbar {
-background-color: var(--teal);
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 14px 24px;
-position: sticky;
-top: 0;
-z-index: 1000;
+  background-color: var(--teal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .nav-brand a {
-text-decoration: none;
-color:white;
-font-weight: bold;
-font-size: 1.5rem;
+  text-decoration: none;
+  color:white;
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
 .menu-toggle {
-display: none;
+  display: none;
 }
 
 .menu-icon {
-display: none;
-font-size: 1.8rem;
-color: var(--light-gray);
-cursor: pointer;
+  display: none;
+  font-size: 1.8rem;
+  color: var(--light-gray);
+  cursor: pointer;
 }
 
 .nav-links {
-display: flex;
-gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .nav-links a {
-text-decoration: none;
-color: white;
-padding: 10px 18px;
-border-radius: 6px;
-font-weight: bold;
-transition: 0.3s;
+  text-decoration: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
 .nav-links a:hover {
-background-color: var(--olive);
+  background-color: var(--olive);
 }
 
-/* Responsive Navbar */
 @media (max-width: 768px) {
-.menu-icon { display: block; }
+  .menu-icon { display: block; }
 
-.nav-links {
-display: none;
-flex-direction: column;
-background-color: var(--teal);
-width: 100%;
-position: absolute;
-top: 60px;
-left: 0;
-}
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background-color: var(--teal);
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    left: 0;
+  }
 
-.menu-toggle:checked + .menu-icon + .nav-links {
-display: flex;
-}
+  .menu-toggle:checked + .menu-icon + .nav-links {
+    display: flex;
+  }
 }
 
 /* ====== MAIN LAYOUT ====== */
@@ -206,36 +206,43 @@ display: flex;
   flex-direction: column;
 }
 
-/* Messages appearance */
+/* ============================= */
+/* ===== MESSAGE BUBBLE FIX ===== */
+/* ============================= */
+
+/* Base bubble styling */
 .chat-box p {
   max-width: 75%;
-  margin-bottom: 10px;
-  padding: 10px 14px;
-  border-radius: 16px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  border-radius: 18px;
   word-wrap: break-word;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  display: inline-block;
 }
 
-.chat-box p strong {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-/* Differentiate sender vs receiver */
-.chat-box p:has(strong:contains("You")) {
+/* Sender (You) — RIGHT SIDE */
+.chat-box p.from-you {
   align-self: flex-end;
   background-color: var(--teal);
   color: white;
+  border-bottom-right-radius: 4px;
 }
 
-.chat-box p:not(:has(strong:contains("You"))) {
+/* Receiver — LEFT SIDE */
+.chat-box p.from-them {
   align-self: flex-start;
-  background-color: #e0e0e0;
-  color: var(--black);
+  background-color: #e6e6e6;
+  color: var(--teal);
+  border-bottom-left-radius: 4px;
 }
 
-/* Chat Input Area */
+/* Remove the bold username display inside the bubble */
+.chat-box p strong {
+  display: none;
+}
+
+/* ===== CHAT INPUT ===== */
 .chat-input {
   display: flex;
   border-top: 2px solid var(--light-gray);
@@ -323,8 +330,3 @@ display: flex;
     font-size: 0.9rem;
   }
 }
-
-
-
-
-

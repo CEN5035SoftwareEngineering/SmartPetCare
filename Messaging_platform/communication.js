@@ -236,7 +236,22 @@ async function loadConversation(otherUserId) {
           : msg.senderUsername || "Unknown User";
 
       const p = document.createElement("p");
-      p.innerHTML = `<strong>${from}:</strong> ${msg.text}`;
+      //p.innerHTML = `<strong>${from}:</strong> ${msg.text}`;
+
+      if (from === "You") {
+      p.classList.add("from-you");
+      } else {
+      p.classList.add("from-them");
+      }
+
+p.textContent = msg.text;
+chatBox.appendChild(p); // line added
+
+
+
+
+
+
       chatBox.appendChild(p);
     });
 
