@@ -4,25 +4,25 @@
   --black: #0D1416;
   --dark-gray: #808384;
   --olive: #96b299;
+  --white: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.12);
 }
 
-/* =============================
+/* ===========================
    GLOBAL
-============================= */
-
+=========================== */
 body {
   font-family: "Segoe UI", Arial, sans-serif;
   background-color: var(--light-gray);
   margin: 0;
   padding: 0;
-  color: var(--teal);
-  padding-top: 70px; /* keeps content below fixed navbar */
+  color: var(--black);
+  padding-top: 70px; /* Like your other pages */
 }
 
-/* =============================
+/* ===========================
    NAVBAR
-============================= */
-
+=========================== */
 .navbar {
   background-color: var(--teal);
   position: fixed;
@@ -32,13 +32,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8em 1.2em;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  padding: 0.6em 0.6em;
+  box-shadow: 0 2px 5px var(--shadow);
 }
 
 .nav-brand a {
   text-decoration: none;
-  color: white;
+  color: var(--white);
   font-weight: bold;
   font-size: 1.5rem;
 }
@@ -61,12 +61,10 @@ body {
   background-color: var(--olive);
 }
 
-/* Hidden checkbox toggle */
 .menu-toggle {
   display: none;
 }
 
-/* Hamburger icon */
 .menu-icon {
   display: none;
   font-size: 1.8rem;
@@ -74,12 +72,8 @@ body {
   cursor: pointer;
 }
 
-/* =============================
-   MOBILE NAVIGATION
-============================= */
-
+/* Mobile Menu */
 @media (max-width: 768px) {
-
   .menu-icon {
     display: block;
   }
@@ -92,58 +86,41 @@ body {
     position: absolute;
     top: 60px;
     left: 0;
-    padding: 10px 0;
+    padding-bottom: 15px;
   }
 
-  /* Show menu */
   .menu-toggle:checked + .menu-icon + .nav-links {
     display: flex;
   }
-
-  .nav-links a {
-    display: block;
-    padding: 14px;
-    text-align: center;
-  }
-
-  /* Push page content down when menu opens */
-  .menu-toggle:checked ~ .container {
-    margin-top: 240px;
-  }
 }
 
-
-/* =============================
-   MAIN LAYOUT
-============================= */
+/* ===========================
+   MESSAGING LAYOUT
+=========================== */
 
 .container {
   display: flex;
-  flex-direction: row;
   max-width: 1000px;
   height: 80vh;
-  margin: 40px auto;
-  background: white;
+  margin: 20px auto;
+  background: var(--white);
   border-radius: 12px;
-  box-shadow: 0 4px 10px var(--teal);
+  box-shadow: 0 4px 8px var(--shadow);
   overflow: hidden;
 }
 
-/* =============================
-   SIDEBAR
-============================= */
-
+/* Sidebar */
 .sidebar {
   width: 35%;
   background-color: #f7f7f7;
   border-right: 2px solid var(--light-gray);
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 12px;
 }
 
 .sidebar h3 {
-  margin: 10px 0;
+  margin: 12px 0;
   color: var(--teal);
   text-align: center;
 }
@@ -152,7 +129,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 10px;
 }
 
 .search-section input {
@@ -170,18 +146,22 @@ body {
   padding: 8px 10px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.search-section button:hover {
-  opacity: 0.9;
+.search-section ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  max-height: 200px;
 }
 
+/* Contact List */
 #contactList,
 #searchResults {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 10px 0;
   overflow-y: auto;
   flex-grow: 1;
 }
@@ -191,10 +171,10 @@ body {
   padding: 10px 12px;
   margin: 4px 0;
   border-radius: 6px;
-  background-color: #fff;
+  background-color: var(--white);
   border: 1px solid var(--light-gray);
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+  transition: 0.3s;
 }
 
 .contact-item:hover,
@@ -203,16 +183,12 @@ body {
   color: white;
 }
 
-/* =============================
-   CHAT
-============================= */
-
+/* Chat Section */
 .chat-section {
   width: 65%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  background-color: #fff;
+  background-color: var(--white);
 }
 
 .chat-header {
@@ -224,6 +200,7 @@ body {
   font-size: 1.2rem;
 }
 
+/* Chat Box */
 .chat-box {
   flex-grow: 1;
   padding: 15px;
@@ -231,53 +208,46 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 
-/* MESSAGE BUBBLES */
-
+/* Message bubbles */
 .chat-box p {
   max-width: 75%;
-  margin-bottom: 12px;
   padding: 12px 16px;
-  border-radius: 18px;
+  border-radius: 16px;
   word-wrap: break-word;
   font-size: 1rem;
-  display: inline-block;
 }
 
-.chat-box p.from-you {
+/* Your messages */
+.from-you {
   align-self: flex-end;
   background-color: var(--teal);
   color: white;
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 5px;
 }
 
-.chat-box p.from-them {
+/* Their messages */
+.from-them {
   align-self: flex-start;
   background-color: #e6e6e6;
-  color: var(--teal);
-  border-bottom-left-radius: 4px;
+  color: var(--black);
+  border-bottom-left-radius: 5px;
 }
 
-.chat-box p strong {
-  display: none;
-}
-
-/* CHAT INPUT */
-
+/* Chat Input */
 .chat-input {
   display: flex;
   border-top: 2px solid var(--light-gray);
   padding: 10px;
-  background-color: #fff;
 }
 
-.chat-input input[type="text"] {
+.chat-input input {
   flex-grow: 1;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 1rem;
   margin-right: 10px;
 }
 
@@ -289,31 +259,11 @@ body {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.chat-input button:hover {
-  opacity: 0.9;
-}
-
-/* =============================
-   RESPONSIVE LAYOUT
-============================= */
-
-@media (max-width: 1024px) {
-  .container {
-    height: 75vh;
-    margin: 20px;
-  }
-
-  .sidebar {
-    width: 40%;
-  }
-
-  .chat-section {
-    width: 60%;
-  }
-}
+/* ===========================
+   RESPONSIVE
+=========================== */
 
 @media (max-width: 768px) {
   .container {
@@ -334,84 +284,8 @@ body {
     width: 100%;
     height: 60%;
   }
-}
 
-@media (max-width: 480px) {
-  .chat-input input[type="text"] {
-    font-size: 0.9rem;
-  }
-
-  .chat-input button {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-  }
-}
-/* =========================================
-   REAL MOBILE FIX — FULLY RESPONSIVE LAYOUT
-========================================= */
-@media (max-width: 768px) {
-
-  /* Stack vertically */
-  .container {
-    display: flex;
-    flex-direction: column !important;
-    width: 100% !important;
-    height: calc(100vh - 70px) !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-  }
-
-  /* Sidebar becomes top section */
-  .sidebar {
-    width: 100% !important;
-    height: 45% !important;
-    border-right: none !important;
-    border-bottom: 2px solid var(--light-gray) !important;
-    overflow-y: auto !important;
-  }
-
-  /* Chat becomes bottom section */
-  .chat-section {
-    width: 100% !important;
-    height: 55% !important;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .chat-box {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 12px;
-  }
-
-  /* Prevent huge spacing below nav */
-  body {
-    padding-top: 60px !important;
-  }
-
-  /* Make search + contacts look cleaner */
-  .search-section input,
-  .search-section button {
-    font-size: 1rem !important;
-  }
-
-  /* Users list scrolling */
-  #contactList,
-  #searchResults {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-}
-
-/* VERY SMALL PHONES */
-@media (max-width: 480px) {
-  .chat-input input {
-    font-size: 0.85rem !important;
-  }
-
-  .chat-input button {
-    font-size: 0.85rem !important;
-    padding: 8px 10px !important;
+  .chat-box p {
+    max-width: 85%;
   }
 }
