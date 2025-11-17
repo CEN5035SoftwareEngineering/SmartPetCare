@@ -114,7 +114,21 @@ body {
     text-align: center;
   }
 }
+/* ===== CSS-only using :has() (no HTML changes) ===== */
+@media (max-width: 768px) {
+  /* Replace 260px with whatever dropdown height is */
+  :root { --mobile-dropdown-height: 260px; }
 
+  /* When any .menu-toggle inside the document is checked, add top padding to body */
+  body:has(.menu-toggle:checked) {
+    padding-top: calc(70px + var(--mobile-dropdown-height)); /* 70px = original navbar height */
+  }
+
+  /* Optional: make sure nav-links remain visible as before (keeps your existing behavior) */
+  .menu-toggle:checked + .menu-icon + .nav-links {
+    display: flex;
+  }
+}
 /* ---------------------------------------------------------
    CARDS (match screenshot)
 --------------------------------------------------------- */
