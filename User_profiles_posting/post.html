@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,23 +8,9 @@
   <link rel="icon" type="image/x-icon" href="styles/favicon.png">
   <link rel="stylesheet" href="profilestyles.css">
 </head>
+
 <body>
-  <!-- No navigation bar needed for this page -->
-  <!-- Navbar
-  <div class="navbar">
-    <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
-    <input type="checkbox" id="menu-toggle" class="menu-toggle">
-    <label for="menu-toggle" class="menu-icon">☰</label>
-
-    <div class="nav-links">
-      <a href="profile.html">Profile</a>
-      <a href="post.html">Post</a>
-      <a href="scroll_view.html">View Posts</a>
-    </div>
-  </div> -->
-
-  <!-- Post Pet photo -->
   <div class="container">
     <h1>Post a Photo of your Dog!</h1>
     <h2>Upload a picture of your dog to share with the Smart Pet Care community.</h2>
@@ -36,14 +23,10 @@
       <label>Caption:</label>
       <textarea id="postCaption" placeholder="Write a cute caption..." required></textarea>
 
-      <label>Your Name:</label>
-      <input type="text" id="postUser" placeholder="Enter your name" required />
-
       <div class="btn-group">
         <button type="submit" class="btn teal">Post</button>
         <button type="reset" class="btn olive">Clear</button>
       </div>
-    
     </form>
 
     <p id="successMsg" style="display:none;color:var(--olive);font-weight:bold;margin-top:15px;">
@@ -53,4 +36,5 @@
 
   <script src="post.js" defer></script>
 </body>
+
 </html>

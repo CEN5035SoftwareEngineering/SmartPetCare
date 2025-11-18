@@ -163,14 +163,18 @@
 
       <div id="postsTab" class="content-tab active">
         <h3>My Posts</h3>
+
+        <!-- Moved outside of userPostsContainer so it won't be deleted -->
+        <div class="btn-group" style="margin: 20px 0;">
+          <button id="goToPostPage" class="btn olive">Go to Post Page</button>
+        </div>
+
         <div id="userPostsContainer">
-          <!-- Posts placeholder -->
-          <div class="btn-group" style="margin: 20px 0;">
-            <button id="goToPostPage" class="btn olive">Go to Post Page</button>
-          </div>
+          <!-- Posts will be (hopefully) loaded here -->
         </div>
       </div>
 
+      <!-- MIGHT NEED TO REMOVE CUZ TIME -- IDK IF CAN GET TO WORK!!! -->
       <div id="feedbackTab" class="content-tab">
         <h3>Feedback</h3>
         <div id="feedbackContainer">

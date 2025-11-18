@@ -1,20 +1,15 @@
-// Profile.js 
+// Profile.js — FINAL FIXED VERSION (public/private + working tabs/forms)
 document.addEventListener("DOMContentLoaded", async () => {
   if (typeof Parse === "undefined") {
     console.error("Parse SDK not loaded!");
     return;
   }
 
+  // Get URL params for public profile view
   const urlParams = new URLSearchParams(window.location.search);
   const publicId = urlParams.get("id");
   const typeParam = urlParams.get("type");
   const isPublicView = !!publicId;
-
-  // Debugging logs
-  console.log("PROFILE JS LOADED");
-  console.log("URL:", window.location.href);
-  console.log("publicId:", publicId);
-  console.log("typeParam:", typeParam);
 
   const currentUser = Parse.User.current();
 
@@ -23,14 +18,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileTabs = document.getElementById("profileTabs");
   const profileRoleTabs = document.getElementById("profileRoleTabs");
   const contentTabs = document.getElementById("contentTabs");
+
   const tabButtons = document.querySelectorAll(".tab-btn");
   const tabContents = document.querySelectorAll(".tab-content");
   const contentTabButtons = document.querySelectorAll(".content-tab-btn");
   const contentTabSections = document.querySelectorAll(".content-tab");
+
   const logoutBtn = document.getElementById("logoutBtn");
   const bookBtn = document.getElementById("bookCaretaker");
 
-  // Pet Parent Profile
+  // Pet Parent elements
   const saveParentBtn = document.getElementById("saveProfile");
   const editParentBtn = document.getElementById("editProfile");
   const parentForm = document.getElementById("parentForm");
@@ -48,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   dogPreview.classList.add("preview");
   dogPhotoInput.insertAdjacentElement("afterend", dogPreview);
 
-  // Caretaker Profile 
+  // Caretaker elements
   const saveCaretakerBtn = document.getElementById("saveCaretaker");
   const editCaretakerBtn = document.getElementById("editCaretaker");
   const caretakerForm = document.getElementById("caretakerForm");
@@ -72,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Public Profile View
+  // Public profile view logic
   if (isPublicView) {
     roleSelect.classList.add("hidden");
     profileTabs.classList.remove("hidden");
@@ -98,13 +95,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         profile = await caretakerQuery.first();
         if (profile) {
           showCaretakerProfile(profile);
-          if (bookBtn) {
-            bookBtn.classList.remove("hidden");
-          }
+          if (bookBtn) bookBtn.classList.remove("hidden");
         }
       }
 
-      // fallback if type is missing or query fails
+      // fallback if type is missing
       if (!profile) {
         const fallbackParentQuery = new Parse.Query(PetParent);
         fallbackParentQuery.equalTo("objectId", publicId);
@@ -117,9 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           profile = await fallbackCaretakerQuery.first();
           if (profile) {
             showCaretakerProfile(profile);
-            if (bookBtn) {
-              bookBtn.classList.remove("hidden");
-            }
+            if (bookBtn) bookBtn.classList.remove("hidden");
           }
         }
       }
@@ -132,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Profile not found.");
       console.error(e);
     }
-    return;
+    return; // Stop further execution for public view
   }
 
   // If not public view, require login
@@ -146,20 +139,43 @@ document.addEventListener("DOMContentLoaded", async () => {
     showTab("parentTab");
     roleSelect.classList.add("hidden");
     profileTabs.classList.remove("hidden");
+    parentForm.classList.remove("hidden");
+    parentSection.classList.add("hidden");
+    caretakerForm.classList.add("hidden");
+    caretakerSection.classList.add("hidden");
   });
 
   document.getElementById("chooseCaretaker").addEventListener("click", () => {
     showTab("caretakerTab");
     roleSelect.classList.add("hidden");
     profileTabs.classList.remove("hidden");
+    caretakerForm.classList.remove("hidden");
+    caretakerSection.classList.add("hidden");
+    parentForm.classList.add("hidden");
+    parentSection.classList.add("hidden");
   });
 
+  // Tab switching for profile tabs
   function showTab(tabId) {
     tabButtons.forEach((b) => b.classList.toggle("active", b.dataset.tab === tabId));
     tabContents.forEach((tab) => tab.classList.toggle("active", tab.id === tabId));
+
+    if (!isPublicView) {
+      if (tabId === "parentTab") {
+        parentForm.classList.remove("hidden");
+        caretakerForm.classList.add("hidden");
+        parentSection.classList.add("hidden");
+        caretakerSection.classList.add("hidden");
+      } else if (tabId === "caretakerTab") {
+        caretakerForm.classList.remove("hidden");
+        parentForm.classList.add("hidden");
+        caretakerSection.classList.add("hidden");
+        parentSection.classList.add("hidden");
+      }
+    }
   }
 
-  // Post/Feedback tabs
+  // Tab switching for content tabs
   contentTabButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.contentTab;
@@ -170,10 +186,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
+  // Image preview
   parentPhotoInput.addEventListener("change", () => previewImage(parentPhotoInput, parentPreview));
   dogPhotoInput.addEventListener("change", () => previewImage(dogPhotoInput, dogPreview));
   caretakerPhotoInput.addEventListener("change", () => previewImage(caretakerPhotoInput, caretakerPreview));
 
+  function previewImage(input, previewDiv) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      previewDiv.innerHTML = `<img src="${reader.result}" class="circle-photo" alt="Preview">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Save Pet Parent profile
   saveParentBtn.addEventListener("click", async () => {
     try {
       const PetParent = Parse.Object.extend("PetParent");
@@ -266,13 +294,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     parentDisplay.innerHTML = html;
     parentForm.classList.add("hidden");
     parentSection.classList.remove("hidden");
-
-    // Only show edit button if this is not public view
-    if (!isPublicView) editParentBtn.classList.remove("hidden");
-    else editParentBtn.classList.add("hidden");
+    editParentBtn.classList.toggle("hidden", isPublicView);
   }
 
-  // Caretaker profile
+  // Save Caretaker profile
   saveCaretakerBtn.addEventListener("click", async () => {
     try {
       const Caretaker = Parse.Object.extend("Caretaker");
@@ -302,9 +327,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showCaretakerProfile(caretaker);
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
-
       if (bookBtn) bookBtn.classList.remove("hidden");
-
     } catch (err) {
       alert("Error saving caretaker: " + err.message);
       console.error(err);
@@ -328,10 +351,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     caretakerSection.classList.add("hidden");
   });
 
-
   function showCaretakerProfile(profileObj) {
     showTab("caretakerTab");
-
     const html = `
       <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <div style="display: flex; align-items: center; gap: 20px;">
@@ -345,50 +366,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p><strong>Rate:</strong> $${profileObj.get("rate") || "—"} / hr</p>
           </div>
         </div>
-      </div>
-    `;
-
+      </div>`;
     caretakerDisplay.innerHTML = html;
     caretakerForm.classList.add("hidden");
     caretakerSection.classList.remove("hidden");
-
-    // Only show edit button if this is not public view
-    if (!isPublicView) editCaretakerBtn.classList.remove("hidden");
-    else editCaretakerBtn.classList.add("hidden");
+    editCaretakerBtn.classList.toggle("hidden", isPublicView);
   }
 
-  // Image preview
-  function previewImage(input, previewDiv) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      previewDiv.innerHTML = `<img src="${reader.result}" class="circle-photo" alt="Preview">`;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // If user already has a profile and this is not a public view
+  // Load existing user profile if present (only for private view)
   if (currentUser && !isPublicView) {
-    console.log("Logged-in user detected. Loading private profile.");
-
     const PetParent = Parse.Object.extend("PetParent");
     const Caretaker = Parse.Object.extend("Caretaker");
 
-    const parentQuery = new Parse.Query(PetParent);
-    parentQuery.equalTo("user", currentUser);
-
-    const caretakerQuery = new Parse.Query(Caretaker);
-    caretakerQuery.equalTo("user", currentUser);
+    const parentQuery = new Parse.Query(PetParent).equalTo("user", currentUser);
+    const caretakerQuery = new Parse.Query(Caretaker).equalTo("user", currentUser);
 
     const [parentProfile, caretakerProfile] = await Promise.all([
       parentQuery.first(),
       caretakerQuery.first()
     ]);
-
-    console.log("Found parent profile:", !!parentProfile);
-    console.log("Found caretaker profile:", !!caretakerProfile);
 
     if (parentProfile) {
       showParentProfile(parentProfile);
@@ -396,26 +392,46 @@ document.addEventListener("DOMContentLoaded", async () => {
       profileTabs.classList.remove("hidden");
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
-
     } else if (caretakerProfile) {
       showCaretakerProfile(caretakerProfile);
       roleSelect.classList.add("hidden");
       profileTabs.classList.remove("hidden");
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
-
       if (bookBtn) bookBtn.classList.remove("hidden");
-
     } else {
       roleSelect.classList.remove("hidden");
     }
   }
 
-});
+  // Fix 1: Profile tab button switching (Pet Parent / Caretaker)
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const tabId = btn.dataset.tab;
+      showTab(tabId);
+    });
+  });
+
+  // Fix 2: Posts/Feedback content tab switching
+  contentTabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.contentTab;
+      contentTabButtons.forEach((b) => b.classList.remove("active"));
+      contentTabSections.forEach((tab) => tab.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(target).classList.add("active");
+    });
+  });
 
 
-// Go to post page button
-document.getElementById('goToPostPage').addEventListener('click', () => {
-  window.location.href = '../User_profiles_posting/post.html';
+  // "Go to Post Page" button handler
+  const postBtn = document.getElementById("goToPostPage");
+  if (postBtn) {
+    postBtn.addEventListener("click", () => {
+      window.location.href = "../User_profiles_posting/post.html";
+    });
+  }
+
 });
+
 
