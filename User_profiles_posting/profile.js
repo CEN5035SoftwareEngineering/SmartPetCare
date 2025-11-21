@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const contentTabSections = document.querySelectorAll(".content-tab");
 
   const logoutBtn = document.getElementById("logoutBtn");
-  const bookBtn = document.getElementById("bookCaretaker");
+  // const bookBtn = document.getElementById("bookCaretaker");
 
   // Pet Parent elements
   const saveParentBtn = document.getElementById("saveProfile");
@@ -88,6 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         profile = await parentQuery.first();
         if (profile) {
           showParentProfile(profile);
+          loadUserPosts(profile.get("user").id); //load posts for public view
         }
       } else if (typeParam === "Caretaker") {
         const caretakerQuery = new Parse.Query(Caretaker);
@@ -95,7 +96,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         profile = await caretakerQuery.first();
         if (profile) {
           showCaretakerProfile(profile);
-          if (bookBtn) bookBtn.classList.remove("hidden");
+          loadUserPosts(profile.get("user").id);
+          // if (bookBtn) bookBtn.classList.remove("hidden");
         }
       }
 
@@ -112,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           profile = await fallbackCaretakerQuery.first();
           if (profile) {
             showCaretakerProfile(profile);
-            if (bookBtn) bookBtn.classList.remove("hidden");
+            // if (bookBtn) bookBtn.classList.remove("hidden");
           }
         }
       }
@@ -125,6 +127,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Profile not found.");
       console.error(e);
     }
+
+    // Tab switching for content tabs
+    contentTabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.contentTab;
+        contentTabButtons.forEach((b) => b.classList.remove("active"));
+        contentTabSections.forEach((tab) => tab.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(target).classList.add("active");
+      });
+
+    });
+
     return; // Stop further execution for public view
   }
 
@@ -327,7 +342,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showCaretakerProfile(caretaker);
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
-      if (bookBtn) bookBtn.classList.remove("hidden");
+      // if (bookBtn) bookBtn.classList.remove("hidden");
     } catch (err) {
       alert("Error saving caretaker: " + err.message);
       console.error(err);
@@ -398,7 +413,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       profileTabs.classList.remove("hidden");
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
-      if (bookBtn) bookBtn.classList.remove("hidden");
+      // if (bookBtn) bookBtn.classList.remove("hidden");
     } else {
       roleSelect.classList.remove("hidden");
     }
@@ -431,6 +446,171 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.location.href = "../User_profiles_posting/post.html";
     });
   }
+
+
+  // // Load posts for user
+  // async function loadUserPosts() {
+  //   const Post = Parse.Object.extend("Post");
+  //   const query = new Parse.Query(Post);
+  //   query.include("user");
+  //   query.descending("createdAt");
+
+  //   // Filter by user depending on view type
+  //   if (isPublicView) {
+  //     const userPointer = new Parse.User();
+  //     userPointer.id = publicId;
+  //     query.equalTo("user", userPointer);
+  //   } else if (currentUser) {
+  //     query.equalTo("user", currentUser);
+  //   } else {
+  //     return;
+  //   }
+
+  //   try {
+  //     const posts = await query.find();
+  //     const container = document.getElementById("userPostsContainer");
+  //     container.innerHTML = "";
+
+  //     if (posts.length === 0) {
+  //       container.innerHTML = "<p>No posts yet.</p>";
+  //       return;
+  //     }
+
+  //     posts.forEach((post) => {
+  //       const photo = post.get("photo");
+  //       const caption = post.get("caption");
+  //       const timeStamp = post.get("timeStamp");
+
+  //       if (!photo || !caption || !timeStamp) return;
+
+  //       const card = document.createElement("div");
+  //       card.className = "post-card";
+
+  //       const img = document.createElement("img");
+  //       img.src = photo.url();
+  //       img.alt = "Dog Photo";
+  //       img.className = "post-photo";
+
+  //       const captionP = document.createElement("p");
+  //       captionP.textContent = caption;
+
+  //       const dateP = document.createElement("p");
+  //       dateP.className = "timestamp";
+  //       dateP.textContent = new Date(timeStamp).toLocaleString();
+
+  //       card.appendChild(img);
+  //       card.appendChild(captionP);
+  //       card.appendChild(dateP);
+
+  //       // Only allow delete if private view and this user owns the post
+  //       if (!isPublicView) {
+  //         const delBtn = document.createElement("button");
+  //         delBtn.className = "btn small-btn olive";
+  //         delBtn.textContent = "Delete Post";
+  //         delBtn.addEventListener("click", async () => {
+  //           const confirmDelete = confirm("Are you sure you want to delete this post?");
+  //           if (!confirmDelete) return;
+
+  //           try {
+  //             await post.destroy();
+  //             card.remove(); // Remove from DOM
+  //           } catch (err) {
+  //             alert("Failed to delete post.");
+  //             console.error("Delete error:", err);
+  //           }
+  //         });
+
+  //         card.appendChild(delBtn);
+  //       }
+
+  //       container.appendChild(card);
+  //     });
+  //   } catch (err) {
+  //     console.error("Error loading posts:", err);
+  //   }
+  // }
+
+  async function loadUserPosts(userId = null) {
+    const Post = Parse.Object.extend("Post");
+    const query = new Parse.Query(Post);
+    query.include("user");
+    query.descending("createdAt");
+
+    const container = document.getElementById("userPostsContainer");
+    container.innerHTML = "";
+
+    try {
+      if (userId) {
+        const userPointer = new Parse.User();
+        userPointer.id = userId;
+        query.equalTo("user", userPointer);
+      } else if (currentUser) {
+        query.equalTo("user", currentUser);
+      } else {
+        return;
+      }
+
+      const posts = await query.find();
+
+      if (posts.length === 0) {
+        container.innerHTML = "<p>No posts yet.</p>";
+        return;
+      }
+
+      posts.forEach((post) => {
+        const photo = post.get("photo");
+        const caption = post.get("caption");
+        const timeStamp = post.get("timeStamp");
+
+        if (!photo || !caption || !timeStamp) return;
+
+        const card = document.createElement("div");
+        card.className = "post-card";
+
+        const img = document.createElement("img");
+        img.src = photo.url();
+        img.alt = "Dog Photo";
+        img.className = "post-photo";
+
+        const captionP = document.createElement("p");
+        captionP.textContent = caption;
+
+        const dateP = document.createElement("p");
+        dateP.className = "timestamp";
+        dateP.textContent = new Date(timeStamp).toLocaleString();
+
+        card.appendChild(img);
+        card.appendChild(captionP);
+        card.appendChild(dateP);
+
+        // Show delete button only in private view
+        if (!isPublicView) {
+          const delBtn = document.createElement("button");
+          delBtn.className = "btn small-btn olive";
+          delBtn.textContent = "Delete Post";
+          delBtn.addEventListener("click", async () => {
+            const confirmDelete = confirm("Are you sure you want to delete this post?");
+            if (!confirmDelete) return;
+            try {
+              await post.destroy();
+              card.remove();
+            } catch (err) {
+              alert("Failed to delete post.");
+              console.error("Delete error:", err);
+            }
+          });
+          card.appendChild(delBtn);
+        }
+
+        container.appendChild(card);
+      });
+    } catch (err) {
+      console.error("Error loading posts:", err);
+    }
+  }
+
+  // Call loader once DOM + user context are ready
+  loadUserPosts();
 
 });
 

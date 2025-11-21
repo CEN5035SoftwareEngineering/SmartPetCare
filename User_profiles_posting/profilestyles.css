@@ -113,18 +113,23 @@ body {
     text-align: center;
   }
 }
+
 /* ===== CSS-only using :has() (no HTML changes) ===== */
 @media (max-width: 768px) {
+
   /* Replace 260px with whatever dropdown height is */
-  :root { --mobile-dropdown-height: 260px; }
+  :root {
+    --mobile-dropdown-height: 260px;
+  }
 
   /* When any .menu-toggle inside the document is checked, add top padding to body */
   body:has(.menu-toggle:checked) {
-    padding-top: calc(70px + var(--mobile-dropdown-height)); /* 70px = original navbar height */
+    padding-top: calc(70px + var(--mobile-dropdown-height));
+    /* 70px = original navbar height */
   }
 
   /* Optional: make sure nav-links remain visible as before (keeps your existing behavior) */
-  .menu-toggle:checked + .menu-icon + .nav-links {
+  .menu-toggle:checked+.menu-icon+.nav-links {
     display: flex;
   }
 }
@@ -541,10 +546,13 @@ textarea {
 /* Resize photos properly */
 .post-card .post-photo {
   width: 100%;
-  max-width: 500px;     /* Prevents giant images */
+  max-width: 500px;
+  /* Prevents giant images */
   height: auto;
-  max-height: 350px;     /* Keeps images from being too tall */
-  object-fit: cover;     /* Ensures good cropping without distortion */
+  max-height: 350px;
+  /* Keeps images from being too tall */
+  object-fit: cover;
+  /* Ensures good cropping without distortion */
   border-radius: 10px;
   display: block;
 }
@@ -557,3 +565,112 @@ textarea {
   }
 }
 
+/* =========================================
+   PROFILE POSTS VIEW CSS
+   ========================================= */
+
+#userPostsContainer .post-card {
+  background: var(--white);
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px var(--shadow);
+  padding: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#userPostsContainer .post-photo {
+  width: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+
+#userPostsContainer p {
+  margin: 4px 0;
+  color: var(--black);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+#userPostsContainer .timestamp {
+  color: var(--dark-gray);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+#userPostsContainer .btn.olive {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+
+/* =========================================
+   SCROLL VIEW CSS
+   ========================================= */
+
+#feedContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
+
+#feedContainer .post-card {
+  background: var(--white);
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px var(--shadow);
+  padding: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#feedContainer .post-photo {
+  width: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+
+#feedContainer .post-info h3 {
+  margin: 6px 0 4px;
+  font-size: 1rem;
+  color: var(--teal);
+}
+
+#feedContainer .post-info h3 a {
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+#feedContainer .post-info h3 a:hover {
+  color: var(--olive);
+}
+
+#feedContainer .post-info p {
+  margin: 4px 0;
+  color: var(--black);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+#feedContainer .post-info .timeStamp {
+  color: var(--dark-gray);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
