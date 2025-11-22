@@ -439,13 +439,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
 
-  // "Go to Post Page" button handler
+  // // "Go to Post Page" button 
+  // const postBtn = document.getElementById("goToPostPage");
+  // if (postBtn) {
+  //   postBtn.addEventListener("click", () => {
+  //     window.location.href = "../User_profiles_posting/post.html";
+  //   });
+  // }
+
   const postBtn = document.getElementById("goToPostPage");
-  if (postBtn) {
+  if (postBtn && !isPublicView) {
     postBtn.addEventListener("click", () => {
       window.location.href = "../User_profiles_posting/post.html";
     });
+  } else if (postBtn && isPublicView) {
+    postBtn.classList.add("hidden"); // hiding from public view
   }
+
 
 
   // // Load posts for user

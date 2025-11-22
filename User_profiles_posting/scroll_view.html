@@ -23,14 +23,20 @@
     </div>
   </div>
 
-  <!-- Scrollable Dog Feed -->
   <main class="container">
 
+    <!-- Tabs for filtering -->
+    <div class="content-tab-buttons" style="margin-bottom: 20px;">
+      <button class="content-tab-btn active" data-filter="All">All Posts</button>
+      <button class="content-tab-btn" data-filter="PetParent">Pet Parent Posts</button>
+      <button class="content-tab-btn" data-filter="Caretaker">Caretaker Posts</button>
+    </div>
+
     <div id="feedContainer" class="feed"></div>
+
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
-
   <script src="scroll.js" defer></script>
 </body>
 
