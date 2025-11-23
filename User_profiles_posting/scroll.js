@@ -29,14 +29,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     posts.forEach(post => {
-      // const caption = post.get("caption");
-      // const photo = post.get("photo");
-      // const timeStamp = post.get("timeStamp");
-      // const profileType = post.get("profileType") || "PetParent";
-
-      // const userPointer = post.get("user");
-      // let userId = userPointer?.id || post.get("userId");  // fallback to saved ID
-      // const username = post.get("username") || "Unknown";
 
       const caption = post.caption;
       const photo = post.photo;
@@ -83,14 +75,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Function for filtering posts by their profile type
   function filterPostsByType(type) {
     if (type === "All") {
       renderPosts(allPosts);
       return;
     }
-    renderPosts(allPosts.filter(p => p.get("profileType") === type));
+    renderPosts(allPosts.filter(p => p.profileType === type)); // <-- change
   }
+
 
   // Event listeners for the filtering tabs
   filterButtons.forEach(btn => {
@@ -105,10 +97,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Initial load
   try {
-    // await loadProfiles();
-    // await loadPosts();
-    // renderPosts(allPosts);
     const posts = await Parse.Cloud.run("getPostsWithProfiles");
+    allPosts = posts;
     renderPosts(posts);
 
   } catch (err) {
