@@ -34,16 +34,36 @@ document.addEventListener("DOMContentLoaded", async () => {
       await photoFile.save();
       console.log("File successfully uploaded:", photoFile.url());
 
+      // // Determine profile type BEFORE saving the post
+      // let profileType = "Caretaker";
+      // const PetParent = Parse.Object.extend("PetParent");
+      // const parentQuery = new Parse.Query(PetParent);
+      // parentQuery.equalTo("user", currentUser);
+      // const parentProfile = await parentQuery.first();
+
+      // if (parentProfile) {
+      //   profileType = "PetParent";
+      // }
+
       // Determine profile type BEFORE saving the post
-      let profileType = "Caretaker";
+      let profileType = null;
+
       const PetParent = Parse.Object.extend("PetParent");
+      const Caretaker = Parse.Object.extend("Caretaker");
+
+      // Check PetParent profile
       const parentQuery = new Parse.Query(PetParent);
       parentQuery.equalTo("user", currentUser);
       const parentProfile = await parentQuery.first();
 
-      if (parentProfile) {
-        profileType = "PetParent";
-      }
+      // Check Caretaker profile
+      const caretakerQuery = new Parse.Query(Caretaker);
+      caretakerQuery.equalTo("user", currentUser);
+      const caretakerProfile = await caretakerQuery.first();
+
+      // Assign correct type based on actual profile
+      profileType = parentProfile ? "PetParent" : "Caretaker";
+
 
       // ACL
       const acl = new Parse.ACL(currentUser);

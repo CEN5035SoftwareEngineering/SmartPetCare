@@ -20,69 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let parentProfiles = {};
   let caretakerProfiles = {};
 
-  // Load profiles
-  async function loadProfiles() {
-    const PetParent = Parse.Object.extend("PetParent");
-    const Caretaker = Parse.Object.extend("Caretaker");
-
-    const parentQuery = new Parse.Query(PetParent);
-    parentQuery.include("user");
-
-    const caretakerQuery = new Parse.Query(Caretaker);
-    caretakerQuery.include("user");
-
-    const [parentResults, caretakerResults] = await Promise.all([
-      parentQuery.find(),
-      caretakerQuery.find()
-    ]);
-
-    parentProfiles = {};
-    caretakerProfiles = {};
-
-    parentResults.forEach(p => {
-      const u = p.get("user");
-      if (u) parentProfiles[u.id] = p.id;
-    });
-
-    caretakerResults.forEach(c => {
-      const u = c.get("user");
-      if (u) caretakerProfiles[u.id] = c.id;
-    });
-  }
-
-  // function to load all posts
-  async function loadPosts() {
-    const Post = Parse.Object.extend("Post");
-    const query = new Parse.Query(Post);
-    query.include("user");
-    query.descending("createdAt");
-
-    const posts = await query.find();
-
-    console.log(`🔍 Found ${posts.length} posts total`);
-
-    posts.forEach(p => {
-      console.log(`Post ${p.id}:`, {
-        user: p.get("user")?.id || "❌ No user",
-        caption: p.get("caption"),
-        timeStamp: p.get("timeStamp"),
-        photo: p.get("photo") ? "✅" : "❌",
-        profileType: p.get("profileType")
-      });
-    });
-
-    allPosts = posts.filter(p =>
-      p.get("caption") &&
-      p.get("photo") &&
-      p.get("timeStamp")
-      // p.get("user")
-    );
-
-    console.log(`Filtered valid posts: ${allPosts.length}`);
-
-  }
-
-  // Function for rendering posts
   function renderPosts(posts) {
     feedContainer.innerHTML = "";
 
@@ -92,44 +29,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     posts.forEach(post => {
-      const caption = post.get("caption");
-      const photo = post.get("photo");
-      const timeStamp = post.get("timeStamp");
-      const profileType = post.get("profileType") || "PetParent";
+      // const caption = post.get("caption");
+      // const photo = post.get("photo");
+      // const timeStamp = post.get("timeStamp");
+      // const profileType = post.get("profileType") || "PetParent";
 
-      // New public fields
-      let username = post.get("username");
-      let userId = post.get("userId");
+      // const userPointer = post.get("user");
+      // let userId = userPointer?.id || post.get("userId");  // fallback to saved ID
+      // const username = post.get("username") || "Unknown";
 
-      // If fields are missing, try pointer fallback
-      const userPointer = post.get("user");
-      if ((!username || !userId) && userPointer) {
-        try {
-          username = userPointer.get("username"); // Only works if readable
-          userId = userPointer.id;
-        } catch (e) {
-          console.warn(`🚫 Cannot access user pointer for post ${post.id}`);
-        }
-      }
+      const caption = post.caption;
+      const photo = post.photo;
+      const timeStamp = post.timeStamp;
+      const profileType = post.profileType;
+      const username = post.username;
+      const userId = post.userId;
+      const profileId = post.profileId;
 
-      // Fallback - unknown if no username or id
-      if (!username) username = "Unknown";
-      if (!userId) {
-        console.warn(`⚠️ Post ${post.id} missing userId, rendering with limited info.`);
-      }
 
-      // Shows any old posts that may have missing fields
-      if (!photo || !caption || !timeStamp) {
-        console.warn(`⚠️ Skipping malformed post ${post.id}: Missing required content.`);
+      if (!photo || !caption || !timeStamp || !userId) {
+        console.warn(`⚠️ Skipping malformed post ${post.id}`);
         return;
       }
-
-      const profileId =
-        userId && profileType === "PetParent"
-          ? parentProfiles[userId]
-          : userId && profileType === "Caretaker"
-            ? caretakerProfiles[userId]
-            : null;
 
       const profileUrl = profileId
         ? `../User_profiles_posting/profile.html?id=${profileId}&type=${profileType}`
@@ -139,12 +60,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? 'target="_blank"'
         : 'onclick="return false;" style="pointer-events:none;color:gray;"';
 
+      console.log(`🔗 Built profile URL for ${username}: ${profileUrl}`);
 
+      // Render post card
       const card = document.createElement("div");
       card.className = "post-card";
 
       card.innerHTML = `
-      <img src="${photo.url()}" class="post-photo">
+      <img src="${photo}" class="post-photo">
       <div class="post-info">
         <h3>
           <a href="${profileUrl}" ${linkAttributes}>
@@ -158,8 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       feedContainer.appendChild(card);
     });
-
-
   }
 
   // Function for filtering posts by their profile type
@@ -184,9 +105,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Initial load
   try {
-    await loadProfiles();
-    await loadPosts();
-    renderPosts(allPosts);
+    // await loadProfiles();
+    // await loadPosts();
+    // renderPosts(allPosts);
+    const posts = await Parse.Cloud.run("getPostsWithProfiles");
+    renderPosts(posts);
+
   } catch (err) {
     console.error("Error loading feed:", err);
     feedContainer.innerHTML = "<p>Something went wrong.</p>";
