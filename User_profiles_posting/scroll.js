@@ -1,84 +1,17 @@
-// document.addEventListener("DOMContentLoaded", async () => {
-//   Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
-//   Parse.serverURL = 'https://parseapi.back4app.com/';
-
-//   const feedContainer = document.getElementById("feedContainer");
-
-//   const Post = Parse.Object.extend("Post");
-//   const query = new Parse.Query(Post);
-//   query.include("user");
-//   query.descending("createdAt");
-
-//   try {
-//     const posts = await query.find();
-
-//     console.log("Posts returned:", posts.map(p => ({ // for debugging
-//       id: p.id,
-//       user: p.get("user")?.id,
-//       caption: p.get("caption")
-//     })));
-
-//     feedContainer.innerHTML = "";
-
-//     if (posts.length === 0) {
-//       feedContainer.innerHTML = "<p>No posts yet. Be the first to share!</p>";
-//       return;
-//     }
-
-//     for (const post of posts) {
-//       const photo = post.get("photo");
-//       const caption = post.get("caption");
-//       const timeStamp = post.get("timeStamp");
-//       const user = post.get("user");
-
-//       if (!photo || !caption || !timeStamp || !user) continue;
-
-//       const username = user.get("username") || "User";
-//       const profileType = post.get("profileType") || "PetParent";
-
-//       // Resolve correct profile ID
-//       let profileId = "";
-//       if (profileType === "PetParent") {
-//         const Parent = Parse.Object.extend("PetParent");
-//         const pq = new Parse.Query(Parent);
-//         pq.equalTo("user", user);
-//         const parentProfile = await pq.first();
-//         profileId = parentProfile?.id || "";
-//       } else {
-//         const Caretaker = Parse.Object.extend("Caretaker");
-//         const cq = new Parse.Query(Caretaker);
-//         cq.equalTo("user", user);
-//         const caretakerProfile = await cq.first();
-//         profileId = caretakerProfile?.id || "";
-//       }
-
-//       if (!profileId) continue; // Skip if no profile found
-
-//       const profileUrl = `../User_profiles_posting/profile.html?id=${profileId}&type=${profileType}`;
-
-//       const card = document.createElement("div");
-//       card.className = "post-card";
-
-//       card.innerHTML = `
-//         <img src="${photo.url()}" alt="Dog Photo" class="post-photo" />
-//         <div class="post-info">
-//           <h3><a href="${profileUrl}" target="_blank">${username}</a></h3>
-//           <p>${caption}</p>
-//           <p class="timeStamp">${new Date(timeStamp).toLocaleString()}</p>
-//         </div>
-//       `;
-
-//       feedContainer.appendChild(card);
-//     }
-//   } catch (error) {
-//     console.error("Error loading posts:", error);
-//     feedContainer.innerHTML = "<p>Something went wrong. Please try again later.</p>";
-//   }
-// });
+// scroll.js
+console.log("🔄 scroll.js loaded");
+console.log("Parse available?", typeof Parse !== "undefined"); // debugging
 
 document.addEventListener("DOMContentLoaded", async () => {
-  Parse.initialize("fefJHvdGDQOAtrHXUOVnX62hq3s2KB8gUViNUWWP", "klHYFmiUyu9MhG0kVa4U5zjuyVyMD0oWpo33gHfb");
-  Parse.serverURL = 'https://parseapi.back4app.com/';
+
+  console.log("DOM fully loaded, running scroll.js");
+
+  if (typeof Parse === "undefined") {
+    console.error("Parse SDK not loaded!");
+    return;
+  }
+
+  const currentUser = await Parse.User.currentAsync();
 
   const feedContainer = document.getElementById("feedContainer");
   const filterButtons = document.querySelectorAll(".content-tab-btn");
@@ -87,9 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let parentProfiles = {};
   let caretakerProfiles = {};
 
-  // -------------------------------
-  // LOAD PROFILES FIRST (batch fetch)
-  // -------------------------------
+  // Load profiles
   async function loadProfiles() {
     const PetParent = Parse.Object.extend("PetParent");
     const Caretaker = Parse.Object.extend("Caretaker");
@@ -119,9 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // -------------------------------
-  // LOAD POSTS
-  // -------------------------------
+  // function to load all posts
   async function loadPosts() {
     const Post = Parse.Object.extend("Post");
     const query = new Parse.Query(Post);
@@ -129,17 +58,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     query.descending("createdAt");
 
     const posts = await query.find();
+
+    console.log(`🔍 Found ${posts.length} posts total`);
+
+    posts.forEach(p => {
+      console.log(`Post ${p.id}:`, {
+        user: p.get("user")?.id || "❌ No user",
+        caption: p.get("caption"),
+        timeStamp: p.get("timeStamp"),
+        photo: p.get("photo") ? "✅" : "❌",
+        profileType: p.get("profileType")
+      });
+    });
+
     allPosts = posts.filter(p =>
       p.get("caption") &&
       p.get("photo") &&
-      p.get("timeStamp") &&
-      p.get("user")
+      p.get("timeStamp")
+      // p.get("user")
     );
+
+    console.log(`Filtered valid posts: ${allPosts.length}`);
+
   }
 
-  // -------------------------------
-  // RENDER POSTS
-  // -------------------------------
+  // Function for rendering posts
   function renderPosts(posts) {
     feedContainer.innerHTML = "";
 
@@ -149,41 +92,77 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     posts.forEach(post => {
-      const user = post.get("user");
       const caption = post.get("caption");
       const photo = post.get("photo");
       const timeStamp = post.get("timeStamp");
       const profileType = post.get("profileType") || "PetParent";
 
+      // New public fields
+      let username = post.get("username");
+      let userId = post.get("userId");
+
+      // If fields are missing, try pointer fallback
+      const userPointer = post.get("user");
+      if ((!username || !userId) && userPointer) {
+        try {
+          username = userPointer.get("username"); // Only works if readable
+          userId = userPointer.id;
+        } catch (e) {
+          console.warn(`🚫 Cannot access user pointer for post ${post.id}`);
+        }
+      }
+
+      // Fallback - unknown if no username or id
+      if (!username) username = "Unknown";
+      if (!userId) {
+        console.warn(`⚠️ Post ${post.id} missing userId, rendering with limited info.`);
+      }
+
+      // Shows any old posts that may have missing fields
+      if (!photo || !caption || !timeStamp) {
+        console.warn(`⚠️ Skipping malformed post ${post.id}: Missing required content.`);
+        return;
+      }
+
       const profileId =
-        profileType === "PetParent"
-          ? parentProfiles[user.id]
-          : caretakerProfiles[user.id];
+        userId && profileType === "PetParent"
+          ? parentProfiles[userId]
+          : userId && profileType === "Caretaker"
+            ? caretakerProfiles[userId]
+            : null;
 
-      if (!profileId) return;
+      const profileUrl = profileId
+        ? `../User_profiles_posting/profile.html?id=${profileId}&type=${profileType}`
+        : "#";
 
-      const profileUrl =
-        `../User_profiles_posting/profile.html?id=${profileId}&type=${profileType}`;
+      const linkAttributes = profileId
+        ? 'target="_blank"'
+        : 'onclick="return false;" style="pointer-events:none;color:gray;"';
+
 
       const card = document.createElement("div");
       card.className = "post-card";
 
       card.innerHTML = `
-        <img src="${photo.url()}" class="post-photo">
-        <div class="post-info">
-          <h3><a href="${profileUrl}" target="_blank">${user.get("username")}</a></h3>
-          <p>${caption}</p>
-          <p class="timestamp">${new Date(timeStamp).toLocaleString()}</p>
-        </div>
-      `;
+      <img src="${photo.url()}" class="post-photo">
+      <div class="post-info">
+        <h3>
+          <a href="${profileUrl}" ${linkAttributes}>
+            ${username}
+          </a>
+        </h3>
+        <p>${caption}</p>
+        <p class="timestamp">${new Date(timeStamp).toLocaleString()}</p>
+      </div>
+    `;
 
       feedContainer.appendChild(card);
     });
+
+
   }
 
-  // -------------------------------
-  // FILTER HANDLER
-  // -------------------------------
+  // Function for filtering posts by their profile type
   function filterPostsByType(type) {
     if (type === "All") {
       renderPosts(allPosts);
@@ -192,9 +171,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderPosts(allPosts.filter(p => p.get("profileType") === type));
   }
 
-  // -------------------------------
-  // SETUP FILTER TAB EVENTS
-  // -------------------------------
+  // Event listeners for the filtering tabs
   filterButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       filterButtons.forEach(b => b.classList.remove("active"));
@@ -205,9 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // -------------------------------
-  // EXECUTE LOAD + INITIAL RENDER
-  // -------------------------------
+  // Initial load
   try {
     await loadProfiles();
     await loadPosts();
