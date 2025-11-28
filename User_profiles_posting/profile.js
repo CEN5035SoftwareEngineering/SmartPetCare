@@ -1,4 +1,4 @@
-// Profile.js — FINAL FIXED VERSION (public/private + working tabs/forms)
+// Profile.js
 document.addEventListener("DOMContentLoaded", async () => {
   if (typeof Parse === "undefined") {
     console.error("Parse SDK not loaded!");
@@ -89,6 +89,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (profile) {
           showParentProfile(profile);
           loadUserPosts(profile.get("user").id); //load posts for public view
+          loadUserFeedback(profile.get("user").id);
+          console.log("🐶 profile user object:", profile.get("user"));
         }
       } else if (typeParam === "Caretaker") {
         const caretakerQuery = new Parse.Query(Caretaker);
@@ -97,6 +99,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (profile) {
           showCaretakerProfile(profile);
           loadUserPosts(profile.get("user").id);
+          loadUserFeedback(profile.get("user").id);
+          console.log("🐶 profile user object:", profile.get("user"));
           // if (bookBtn) bookBtn.classList.remove("hidden");
         }
       }
@@ -108,12 +112,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         profile = await fallbackParentQuery.first();
         if (profile) {
           showParentProfile(profile);
+          loadUserPosts(profile.get("user").id);
+          loadUserFeedback(profile.get("user").id);
+          console.log("🐶 profile user object:", profile.get("user"));
         } else {
           const fallbackCaretakerQuery = new Parse.Query(Caretaker);
           fallbackCaretakerQuery.equalTo("objectId", publicId);
           profile = await fallbackCaretakerQuery.first();
           if (profile) {
             showCaretakerProfile(profile);
+            loadUserPosts(profile.get("user").id);
+            loadUserFeedback(profile.get("user").id);
+            console.log("🐶 profile user object:", profile.get("user"));
             // if (bookBtn) bookBtn.classList.remove("hidden");
           }
         }
@@ -403,12 +413,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (parentProfile) {
       showParentProfile(parentProfile);
+      // loadUserPosts(currentUser.id);
+      loadUserFeedback();
       roleSelect.classList.add("hidden");
       profileTabs.classList.remove("hidden");
       profileRoleTabs.classList.add("hidden");
       contentTabs.classList.remove("hidden");
     } else if (caretakerProfile) {
       showCaretakerProfile(caretakerProfile);
+      // loadUserPosts(currentUser.id);
+      loadUserFeedback();
       roleSelect.classList.add("hidden");
       profileTabs.classList.remove("hidden");
       profileRoleTabs.classList.add("hidden");
@@ -419,7 +433,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Fix 1: Profile tab button switching (Pet Parent / Caretaker)
+  // Profile tab button switching (Pet Parent / Caretaker)
   tabButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const tabId = btn.dataset.tab;
@@ -427,7 +441,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Fix 2: Posts/Feedback content tab switching
+  // Posts/Feedback content tab switching
   contentTabButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.contentTab;
@@ -439,14 +453,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
 
-  // // "Go to Post Page" button 
-  // const postBtn = document.getElementById("goToPostPage");
-  // if (postBtn) {
-  //   postBtn.addEventListener("click", () => {
-  //     window.location.href = "../User_profiles_posting/post.html";
-  //   });
-  // }
-
+  // "Go to Post Page" button 
   const postBtn = document.getElementById("goToPostPage");
   if (postBtn && !isPublicView) {
     postBtn.addEventListener("click", () => {
@@ -456,90 +463,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     postBtn.classList.add("hidden"); // hiding from public view
   }
 
-
-
-  // // Load posts for user
-  // async function loadUserPosts() {
-  //   const Post = Parse.Object.extend("Post");
-  //   const query = new Parse.Query(Post);
-  //   query.include("user");
-  //   query.descending("createdAt");
-
-  //   // Filter by user depending on view type
-  //   if (isPublicView) {
-  //     const userPointer = new Parse.User();
-  //     userPointer.id = publicId;
-  //     query.equalTo("user", userPointer);
-  //   } else if (currentUser) {
-  //     query.equalTo("user", currentUser);
-  //   } else {
-  //     return;
-  //   }
-
-  //   try {
-  //     const posts = await query.find();
-  //     const container = document.getElementById("userPostsContainer");
-  //     container.innerHTML = "";
-
-  //     if (posts.length === 0) {
-  //       container.innerHTML = "<p>No posts yet.</p>";
-  //       return;
-  //     }
-
-  //     posts.forEach((post) => {
-  //       const photo = post.get("photo");
-  //       const caption = post.get("caption");
-  //       const timeStamp = post.get("timeStamp");
-
-  //       if (!photo || !caption || !timeStamp) return;
-
-  //       const card = document.createElement("div");
-  //       card.className = "post-card";
-
-  //       const img = document.createElement("img");
-  //       img.src = photo.url();
-  //       img.alt = "Dog Photo";
-  //       img.className = "post-photo";
-
-  //       const captionP = document.createElement("p");
-  //       captionP.textContent = caption;
-
-  //       const dateP = document.createElement("p");
-  //       dateP.className = "timestamp";
-  //       dateP.textContent = new Date(timeStamp).toLocaleString();
-
-  //       card.appendChild(img);
-  //       card.appendChild(captionP);
-  //       card.appendChild(dateP);
-
-  //       // Only allow delete if private view and this user owns the post
-  //       if (!isPublicView) {
-  //         const delBtn = document.createElement("button");
-  //         delBtn.className = "btn small-btn olive";
-  //         delBtn.textContent = "Delete Post";
-  //         delBtn.addEventListener("click", async () => {
-  //           const confirmDelete = confirm("Are you sure you want to delete this post?");
-  //           if (!confirmDelete) return;
-
-  //           try {
-  //             await post.destroy();
-  //             card.remove(); // Remove from DOM
-  //           } catch (err) {
-  //             alert("Failed to delete post.");
-  //             console.error("Delete error:", err);
-  //           }
-  //         });
-
-  //         card.appendChild(delBtn);
-  //       }
-
-  //       container.appendChild(card);
-  //     });
-  //   } catch (err) {
-  //     console.error("Error loading posts:", err);
-  //   }
-  // }
-
+  // Function for loading the users posts into post tab
   async function loadUserPosts(userId = null) {
     const Post = Parse.Object.extend("Post");
     const query = new Parse.Query(Post);
@@ -619,8 +543,92 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Call loader once DOM + user context are ready
+
+  // Feedback tab: Load feedback into feedback tab
+  async function loadUserFeedback(userId) {
+    userId = userId || (currentUser && currentUser.id);
+    if (!userId) return;
+
+    const Feedback = Parse.Object.extend("Feedback");
+    const query = new Parse.Query(Feedback);
+
+    console.log("🔍 Loading feedback for userId:", userId);
+
+    const pointer = new Parse.User();
+    pointer.id = userId;
+
+    query.equalTo("target", pointer);
+
+
+    query.equalTo("target", pointer);
+    query.include("author");
+    query.descending("createdAt");
+
+    try {
+      const results = await query.find();
+      console.log(`📦 Found ${results.length} feedback entries`);
+      renderFeedbackOnProfile(results);
+    } catch (e) {
+      console.error("❌ Error loading feedback:", e);
+    }
+  }
+
+
+  function renderFeedbackOnProfile(feedbacks) {
+    const container = document.getElementById("feedbackContainer");
+    container.innerHTML = "";
+
+    if (!feedbacks || feedbacks.length === 0) {
+      container.innerHTML = "<p>No feedback yet.</p>";
+      return;
+    }
+
+    console.log(`🎨 Rendering ${feedbacks.length} feedback entries`);
+
+    feedbacks.forEach((entry, i) => {
+      try {
+
+        const authorPointer = entry.get("author");
+        let author = "Anonymous";
+
+        try {
+          if (authorPointer && typeof authorPointer.get === "function") {
+            const uname = authorPointer.get("username");
+            if (uname) author = uname;
+          } else if (typeof authorPointer === "object" && authorPointer.id) {
+            author = `User ${authorPointer.id}`; // fallback to objectId
+          }
+        } catch (e) {
+          console.warn("⚠️ Failed to get author username", e);
+        }
+
+
+        const role = entry.get("role") || "—";
+        const rating = entry.get("rating") || 0;
+        const text = entry.get("text") || "";
+        const createdAt = entry.createdAt;
+
+        const card = document.createElement("div");
+        card.className = "feedback-card";
+
+        card.innerHTML = `
+        <p><strong>${author}</strong> (${role})</p>
+        <p>${"⭐".repeat(rating)} (${rating}/5)</p>
+        <p>${text}</p>
+        <small>${new Date(createdAt).toLocaleString()}</small>
+        <hr />
+      `;
+
+        container.appendChild(card);
+      } catch (err) {
+        console.error(`❌ Failed to render feedback #${i + 1}`, err);
+      }
+    });
+  }
+
+  // Call loadUserPosts when script is loaded
   loadUserPosts();
+  loadUserFeedback();
 
 });
 

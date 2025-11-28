@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,56 +8,58 @@
   <link rel="icon" type="image/x-icon" href="../styles/favicon.png">
   <link rel="stylesheet" href="feedback.css">
 </head>
+
 <body>
 
-<!-- Navbar -->
-<div class="navbar">
-  <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="nav-brand"><a href="../index.html">Smart Pet Care</a></div>
 
-  <input type="checkbox" id="menu-toggle" class="menu-toggle">
-  <label for="menu-toggle" class="menu-icon">☰</label>
+    <input type="checkbox" id="menu-toggle" class="menu-toggle">
+    <label for="menu-toggle" class="menu-icon">☰</label>
 
-  <div class="nav-links">
-    <a href="../User_profiles_posting/profile.html">Profile</a>
-    <a href="../Searching/search.html">Search</a>
-    <a href="../Rebooking/book.html">Book</a>
-    <a href="feedback.html">Feedback</a>
-    <a href="../Messaging_platform/communication.html">Messaging</a>
-  </div>
-</div>
-
-<h1>Smart Pet Care</h1>
-<div class="card">
-  <h3>Leave Feedback</h3>
-  <div class="grid">
-    <div>
-      <label>Who are you reviewing?</label>
-      <input id="targetId" placeholder="Enter the name of the user" />
-    </div>
-    <div>
-      <label>Your Role</label>
-      <select id="role">
-        <option value="caretaker">Caretaker</option>
-        <option value="petParent">Pet Parent</option>
-      </select>
-    </div>
-    <div>
-      <label>Rating (1–5)</label>
-      <input id="rating" type="number" min="1" max="5" step="1" />
-    </div>
-    <div style="grid-column: 1 / -1;">
-      <label>Comment</label>
-      <textarea id="text" rows="3" placeholder="Write your feedback..."></textarea>
+    <div class="nav-links">
+      <a href="../User_profiles_posting/profile.html">Profile</a>
+      <a href="../Searching/search.html">Search</a>
+      <a href="../Rebooking/book.html">Book</a>
+      <a href="feedback.html">Feedback</a>
+      <a href="../Messaging_platform/communication.html">Messaging</a>
     </div>
   </div>
-  <button onclick="createFeedback()">Submit Feedback</button>
-  <button onclick="listFeedback()" style="margin-left:10px;">Load Feedback</button>
-  <pre id="createOut"></pre>
 
-  <div id="feedbackList" class="feedback-list"></div>
-</div>
+  <h1>Smart Pet Care</h1>
+  <div class="card">
+    <h3>Leave Feedback</h3>
+    <div class="grid">
+      <div>
+        <label>Who are you reviewing?</label>
+        <input id="targetId" placeholder="Enter the name of the user" />
+      </div>
+      <div>
+        <label>Your Role</label>
+        <select id="role">
+          <option value="caretaker">Caretaker</option>
+          <option value="petParent">Pet Parent</option>
+        </select>
+      </div>
+      <div>
+        <label>Rating (1–5)</label>
+        <input id="rating" type="number" min="1" max="5" step="1" />
+      </div>
+      <div style="grid-column: 1 / -1;">
+        <label>Comment</label>
+        <textarea id="text" rows="3" placeholder="Write your feedback..."></textarea>
+      </div>
+    </div>
+    <button onclick="createFeedback()">Submit Feedback</button>
+    <button onclick="listFeedback()" style="margin-left:10px;">Load Feedback</button>
+    <pre id="createOut"></pre>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
-<script src="feedback.js" defer></script>
+    <div id="feedbackList" class="feedback-list"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/3.4.4/parse.min.js"></script>
+  <script src="feedback.js"></script>
 </body>
+
 </html>

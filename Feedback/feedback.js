@@ -54,19 +54,22 @@ async function createFeedback() {
   try {
     // Find target user
     // Call the cloud function to safely find any user
-const targetUserData = await Parse.Cloud.run("findUserByUsername", { username: targetUsername });
+    const targetUserData = await Parse.Cloud.run("findUserByUsername", { username: targetUsername });
 
-if (!targetUserData) {
-  alert("No user found with that username.");
-  return;
-}
+    if (!targetUserData) {
+      alert("No user found with that username.");
+      return;
+    }
 
-// Create a pointer manually using the objectId returned
-const targetUser = {
-  __type: "Pointer",
-  className: "_User",
-  objectId: targetUserData.objectId,
-};
+    // Create a pointer manually using the objectId returned
+    // const targetUser = {
+    //   __type: "Pointer",
+    //   className: "_User",
+    //   objectId: targetUserData.objectId,
+    // };
+    const targetUser = new Parse.User();
+    targetUser.id = targetUserData.objectId;
+
 
 
     if (!targetUser) {
@@ -83,14 +86,18 @@ const targetUser = {
     feedback.set("text", text);
     feedback.set("role", role);
     feedback.set("rating", rating);
+    feedback.set("targetUserId", targetUser.id); // Added Nov 26 to test for profile populating
+
 
     // Setup ACL: author can read/write, public authenticated users can read
     const acl = new Parse.ACL();
-    acl.setReadAccess(currentUser, true);
+    acl.setReadAccess(currentUser, true);        // feedback author
     acl.setWriteAccess(currentUser, true);
-    acl.setPublicReadAccess(false); // deny public
-    acl.setRoleReadAccess("Authenticated", true); // allow logged-in users to read
+    acl.setReadAccess(targetUser, true);         // allow target to read
+    acl.setRoleReadAccess("Authenticated", true); // optional: allow all logged-in users
+    acl.setPublicReadAccess(true);            // optional: allow public
     feedback.setACL(acl);
+
 
     await feedback.save();
     output.textContent = "✅ Feedback submitted successfully!";
