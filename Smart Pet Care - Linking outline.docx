@@ -1,0 +1,66 @@
+https://www.altexsoft.com/blog/non-functional-requirements/
+
+"Performance. How fast does the system return results?
+
+Scalability. How much will performance change with higher workloads?
+
+Portability. Which hardware, operating systems, and browsers, along with their versions, does the software run on?
+
+Compatibility. Does the system conflict with other applications and processes?
+
+Reliability. How often does the system experience critical failures?
+
+Maintainability.  How much time does it take to fix the issue when it arises?
+
+Availability. How long is the average system downtime?
+
+Security. How well are the system and its data protected against attacks?
+
+Usability. How easy is it to use the system?"
+
+
+https://www.geeksforgeeks.org/software-engineering/functional-vs-non-functional-requirements/
+
+Scalability
+-> Number of users platform can handle
+
+Portability
+-> Deployment on docker + cloud
+
+Compatibility
+-> This is regarding multiple browsers if we're doing that
+
+Reliability
+-> Storing, managing, retrieving user profiles, booking data and message history
+
+Availability
+-> Must be up and running type thing to avoid missed bookings, messages, etc. 
+
+Maintainability
+-> Would think the code should be fairly modular for easy fixes + version control technically
+
+Security
+-> Encrypted passwords and Paypal authentication?
+
+Usability
+-> User friendly UI
+
+Performance
+-> Maybe mention something along how long it takes to move from page to page 
+
+-----------------------------------
+
+This if from ChatGPT:
+
+| **Type**        | **Requirement**                                                                                                                   |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Performance     | The system should return results quickly. Moving between login, 			profile view, and messaging should take no longer than 2 seconds. |
+| Scalability     | Should handle 200+ users without crashing or slowing down.                                                                        |
+| Portability     | Must run in Docker containers and deploy to AWS easily.                                                                           |
+| Compatibility   | Works across modern browsers like Chrome, Firefox, and Safari.                                                                    |
+| Reliability     | Must store and retrieve user/booking/message data reliably.                                                                       |
+| Maintainability | Codebase should be modular and version-controlled (Git).                                                                          |
+| Availability    | System should be live 99% of the time.                                                                                            |
+| Security        | Passwords encrypted; PayPal must use secure authentication.                                                                       |
+| Usability       | Interface should be clean, intuitive, and mobile-friendly.                                                                        |
+
